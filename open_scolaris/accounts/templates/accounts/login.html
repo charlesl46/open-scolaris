@@ -1,0 +1,43 @@
+{% extends "basewithoutnav.html" %}
+
+{% block content %}
+<div class="ui middle aligned center aligned grid" style="height: 100vh;">
+    <div class="column" style="max-width: 450px;">
+        <h2 class="ui teal image header">
+            <div class="content">
+                Me connecter à mon compte
+            </div>
+        </h2>
+        <form method="POST" action="{% url 'login' %}" id="login_form" class="ui large form">
+            {% csrf_token %}
+            <div class="ui stacked segment">
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="username" placeholder="Mon identifiant">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" name="password" placeholder="Mon mot de passe">
+                    </div>
+                </div>
+                <button id="login_button" type="submit" class="ui fluid large teal submit button">Connexion</button>
+            </div>
+
+        </form>
+
+<!--         <div class="ui message">
+            New to us? <a href="#">Sign Up</a>
+        </div> -->
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $("#login_form").submit(function() {
+            $("#login_button").addClass("loading");
+        });
+    });
+</script>
+{% endblock %}

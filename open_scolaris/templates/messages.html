@@ -1,0 +1,9 @@
+{% for msg in messages %}
+<script>
+    $.toast({
+        position : "top center",
+        class: '{{msg.tags}}',
+        message: `{{msg}}`
+    });
+</script>
+{% endfor %}

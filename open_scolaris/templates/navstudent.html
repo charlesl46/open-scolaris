@@ -1,0 +1,56 @@
+<div class="ui fixed inverted menu">
+    <div class="ui container">
+      <a href="#" class="header item">
+        <img style="margin-right: 10px;" class="logo">
+        OpenScolaris
+      </a>
+      <a class="item">Accueil</a>
+      <a class="item">Emploi du temps</a>
+      <div class="ui simple dropdown item">
+        Élements <i class="dropdown icon"></i>
+        <div class="menu">
+          <a class="item" href="#">Joueurs</a>
+          <a class="item" href="#">Équipes</a>
+          <a class="item" href="#">Pays</a>
+          <div class="divider"></div>
+          <div class="header">Header Item</div>
+          <div class="item">
+            <i class="dropdown icon"></i>
+            Sub Menu
+            <div class="menu">
+              <a class="item" href="#">Link Item</a>
+              <a class="item" href="#">Link Item</a>
+            </div>
+          </div>
+          <a class="item" href="#">Link Item</a>
+        </div>
+      </div>
+    </div>
+    <div class="right menu">
+      <div class="item">
+        <div class="ui icon input">
+          <input type="text" placeholder="Rechercher...">
+          <i class="search link icon"></i>
+        </div>
+      </div>
+      {% if user.is_authenticated %}
+      <div class="ui simple dropdown item">
+        {{ user.username }} <i class="dropdown icon"></i>
+        <div class="menu">
+          {% if user.is_staff %}
+          <a class="item" href="{% url 'admin:index' %}">Administration</a>
+          {% endif %}
+          <a class="item" href="#">Paramètres</a>
+          <a class="item" href="#">À propos</a>
+        </div>
+      </div>
+      <a href="{% url 'logout' %}" class="ui item">
+        Déconnexion
+      </a>
+      {% else %}
+      <a href="{% url 'login' %}" class="ui item">
+        Connexion
+      </a>
+      {% endif %}
+    </div>
+</div>
