@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">Évaluation {{a.title}}</h2>
+    <h4 class="ui header">Notes :</h4>
+    <ul>
+        {% for mk in marks %}
+            <li>{{mk.student.full_name}} ({{mk}})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

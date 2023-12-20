@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from accounts.views import login_view,logout_view
-from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done
+from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done,subjects,subject,teacher_assessments,assessment_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,5 +29,9 @@ urlpatterns = [
     path('mark/<int:id>/',mark,name="mark"),
     path('homework/',homework,name="homework"),
     path('homework/<int:id>/',homework_detail,name="homework-detail"),
-    path('homework/<int:id>/mark-as-done',mark_as_done,name="mark-as-done")
+    path('homework/<int:id>/mark-as-done',mark_as_done,name="mark-as-done"),
+    path('subjects/',subjects,name="subjects"),
+    path('subjects/<int:id>/',subject,name="subject"),
+    path('teacher/assessments/',teacher_assessments,name="teacher-assessments"),
+    path('teacher/assessments/<int:id>',assessment_detail,name="assessment-detail")
 ]

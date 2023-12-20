@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">Vos cours</h2>
+    <h4 class="ui header">Classe : {{class}}</h4>
+    <ul>
+        {% for sub in subjects %}
+            <li><a href="{% url 'subject' sub.id %}">{{sub}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

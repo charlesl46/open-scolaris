@@ -9,13 +9,15 @@ from django.core.exceptions import ValidationError
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20)
-    teachers = models.ManyToManyField(AUTH_USER_MODEL,limit_choices_to={"role" : "T"})
+    teachers = models.ManyToManyField(AUTH_USER_MODEL,related_name="subjects",limit_choices_to={"role" : "T"})
+    description = models.TextField(max_length=200,blank=True,null=True)
 
     def __str__(self) -> str:
         return self.name
 
 class Class(models.Model):
     code = models.CharField(max_length=20)
+    subjects_taken = models.ManyToManyField(Subject)
 
     def __str__(self) -> str:
         return self.code
@@ -69,12 +71,19 @@ class Course(models.Model):
     date_end = models.DateTimeField(null=True)
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
     class_object = models.ForeignKey(Class,on_delete=models.CASCADE,null=True)
+    teacher = models.ForeignKey(AUTH_USER_MODEL,on_delete=models.SET_NULL,limit_choices_to={"role" : "T"},null=True)
 
     def __str__(self):
         formatted_date_begin = self.date_begin.strftime('%Y-%m-%d %H:%M') if self.date_begin else 'N/A'
         formatted_date_end = self.date_end.strftime('%Y-%m-%d %H:%M') if self.date_end else 'N/A'
         
         return f"Cours de {self.subject.name} de {formatted_date_begin} à {formatted_date_end}"
+
+    def clean(self):
+        if self.teacher:
+            if self.teacher not in self.subject.teachers.all():
+                raise ValidationError(f"L'enseignant {self.teacher} ne fait pas partie des enseignants du cours {self.subject.name}")
+
     
 class Assessment(models.Model):
     title = models.CharField(max_length=50,null=True)
@@ -101,6 +110,8 @@ class Assessment(models.Model):
     def mean(self) -> float:
         marks = self.marks
         values = list(map(float, marks))
+        if len(values) == 0:
+            return "-"
         mean_value = sum(values) / len(values)
         
         return f"{mean_value:.2f}"
@@ -110,7 +121,7 @@ class Mark(models.Model):
     mark = models.SmallIntegerField()
     off = models.SmallIntegerField(default=20)
     student = models.ForeignKey(AUTH_USER_MODEL,on_delete=models.CASCADE,null=True)
-    assessment = models.ForeignKey(Assessment,on_delete=models.CASCADE,null=True)
+    assessment = models.ForeignKey(Assessment,related_name="marks",on_delete=models.CASCADE,null=True)
 
     def __str__(self) -> str:
         return f"{self.mark} / {self.off}"

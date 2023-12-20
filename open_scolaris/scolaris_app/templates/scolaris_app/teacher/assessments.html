@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">Vos évaluations</h2>
+    <h4 class="ui header">Matières : {{verb}}</h4>
+    <ul>
+        {% for s,asmts in subs %}
+            <li>{{s}}</li>
+                {% if a %}
+                    <ul>
+                    {% for a in asmts %}
+                        <li><a href="{% url 'assessment-detail' a.id %}">{{a}}</a></li>
+                    {% endfor %}
+                    </ul>
+                {% else %}
+                <p>Pas d'évaluations</p>
+                {% endif %}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

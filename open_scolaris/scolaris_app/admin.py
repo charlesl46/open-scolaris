@@ -8,7 +8,7 @@ class ClassAdmin(admin.ModelAdmin):
     list_display = ("__str__","nb_students")
 
 class AssessmentAdmin(admin.ModelAdmin):
-    list_display = ("__str__","mean")
+    list_display = ("__str__","mean","nb_marks")
 
 class HomeworkAdmin(admin.ModelAdmin):
     list_display = ("__str__","class_object")
