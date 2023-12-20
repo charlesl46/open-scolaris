@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">Vos devoirs</h2>
+    <ul>
+        {% for hw,hwc in homeworks %}
+            <li><a href="{% url 'homework-detail' hw.id %}">"{{hw.title}}" en {{hw.subject.name}}</a>
+                <div class="ui checkbox">
+                    {% if hwc.done %}
+                    <input type="checkbox" checked="checked" class="hw_done_checkbutton" id="{{hwc.id}}">
+                    {% else %}
+                    <input type="checkbox" class="hw_done_checkbutton" id="{{hwc.id}}">
+                    {% endif %}
+                    <label>Marquer comme effectué</label>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+<script>
+    $(".hw_done_checkbutton").click(function(){
+        var id = $(this).attr("id");
+        $.ajax({
+            url: "{% url 'mark-as-done' 0 %}".replace('0', id),
+            method: "POST",
+            success: function(data) {
+                console.log("Réponse réussie :", data);
+                var text;
+                if (data.done == true){
+                    text = `Marqué comme effectué`;
+                }
+                if (data.done == false){
+                    text = `Marqué comme non effectué`;
+                }
+                $.toast({
+                        displayTime: 1000,
+                        position : "top center",
+                        message: text
+                });
+
+            },
+            error: function(error) {
+                console.error(error);
+            }
+        });
+
+    });
+</script>
+{% endblock %}

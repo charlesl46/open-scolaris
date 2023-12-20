@@ -4,8 +4,10 @@
         <img style="margin-right: 10px;" class="logo">
         OpenScolaris
       </a>
-      <a class="item">Accueil</a>
-      <a class="item">Emploi du temps</a>
+      <a href="{% url 'home' %}" class="item">Accueil</a>
+      <a href="{% url 'calendar' %}" class="item">Emploi du temps</a>
+      <a href="{% url 'marks' %}" class="item">Notes</a>
+      <a href="{% url 'homework' %}" class="item">Devoirs</a>
       <div class="ui simple dropdown item">
         Élements <i class="dropdown icon"></i>
         <div class="menu">

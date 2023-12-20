@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>OpenScolaris</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.6/dist/semantic.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.6/dist/semantic.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     {% load static %}
 </head>
@@ -21,13 +21,15 @@
         }
     </style>
     {% if user.is_student %}
-        {% include 'nav.html' %}
+        {% include 'navstudent.html' %}
     {% else %}
         {% include 'navteacher.html' %}
     {% endif %}
     {% include 'messages.html' %}
-    {% block content %}
-    {% endblock %}
+    <div style="margin-top: 50px;">
+        {% block content %}
+        {% endblock %}
+    </div>
 
 
 

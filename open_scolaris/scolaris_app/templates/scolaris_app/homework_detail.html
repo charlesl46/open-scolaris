@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">{{hw.title}}</h2>
+    <p>{{hw.description}}</p>
+
+    <ul>
+        <li>Matière : {{hw.subject.name}}</li>
+    </ul>
+</div>
+{% endblock %}

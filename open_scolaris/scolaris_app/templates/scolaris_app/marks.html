@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="ui segment">
+    <h2 class="ui header">Vos notes</h2>
+    <ul>
+        {% for mark in marks %}
+            <li><a href="{% url 'mark' mark.id %}">{{mark}} en {{mark.subject.name}}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

@@ -17,11 +17,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from accounts.views import login_view,logout_view
-from scolaris_app.views import home
+from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('login/',login_view,name="login"),
     path('',home,name="home"),
-    path('logout/',logout_view,name="logout")
+    path('logout/',logout_view,name="logout"),
+    path('calendar/',calendar,name="calendar"),
+    path('marks/',marks,name="marks"),
+    path('mark/<int:id>/',mark,name="mark"),
+    path('homework/',homework,name="homework"),
+    path('homework/<int:id>/',homework_detail,name="homework-detail"),
+    path('homework/<int:id>/mark-as-done',mark_as_done,name="mark-as-done")
 ]
