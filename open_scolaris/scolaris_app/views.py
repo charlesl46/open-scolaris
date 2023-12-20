@@ -63,7 +63,9 @@ def subjects(request : HttpRequest):
 
 def subject(request : HttpRequest,id : int):
     sub = get_object_or_404(Subject,id=id)
-    return render(request,"scolaris_app/student/subject_detail.html",{"sub" : sub})
+    assmts = Assessment.objects.filter(subject=sub).all()
+    marks = Mark.objects.filter(student=request.user,assessment__in=assmts)
+    return render(request,"scolaris_app/student/subject_detail.html",{"sub" : sub,"mks" : marks})
 
 def teacher_assessments(request : HttpRequest):
 

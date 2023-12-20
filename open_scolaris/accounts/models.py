@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from scolaris_app.models import Class
+from django.core.exceptions import ValidationError
+
 
 ROLE_CHOICES = (("S","Élève"),("T","Enseignant"),("A","Administratif"))
 
@@ -22,3 +24,7 @@ class User(AbstractUser):
 
     def is_teacher(self):
         return self.role == "T"
+    
+    def clean(self):
+        if self.role == "S" and not self.class_object:
+            raise ValidationError("Un élève doit impérativement appartenir à une classe")

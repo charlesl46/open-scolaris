@@ -2,7 +2,13 @@
 
 {% block content %}
 <div class="ui segment">
-    <h2 class="ui header">Cours {{sub.title}}</h2>
+    <h2 class="ui header">{{sub.name}} ({{sub.code}})</h2>
     <p>{{sub.description}}</p>
+    <h4 class="ui header">Notes :</h4>
+    <ul>
+        {% for mk in mks%}
+        <li>{{mk.assessment.title}} ({{mk}})</li>
+        {% endfor %}
+    </ul>
 </div>
 {% endblock %}
