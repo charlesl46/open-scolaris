@@ -90,6 +90,9 @@ class Assessment(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
     class_object = models.ForeignKey(Class,on_delete=models.CASCADE,null=True)
     course = models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
+    off = models.SmallIntegerField(default=20)
+    min = models.SmallIntegerField(default=0)
+
 
     @property
     def date(self):
@@ -108,7 +111,8 @@ class Assessment(models.Model):
     
     @property
     def mean(self) -> float:
-        marks = self.marks
+        marks = self.marks.all()
+        marks = marks.values_list("mark",flat=True)
         values = list(map(float, marks))
         if len(values) == 0:
             return "-"
@@ -116,15 +120,16 @@ class Assessment(models.Model):
         
         return f"{mean_value:.2f}"
 
-
 class Mark(models.Model):
-    mark = models.SmallIntegerField()
-    off = models.SmallIntegerField(default=20)
+    mark = models.FloatField(null=True,blank=True)
     student = models.ForeignKey(AUTH_USER_MODEL,on_delete=models.CASCADE,null=True)
     assessment = models.ForeignKey(Assessment,related_name="marks",on_delete=models.CASCADE,null=True)
 
     def __str__(self) -> str:
-        return f"{self.mark} / {self.off}"
+        if self.mark:
+            return f"{self.mark} / {self.assessment.off}"
+        else:
+            return "-"
     
     @property
     def subject(self) -> str:

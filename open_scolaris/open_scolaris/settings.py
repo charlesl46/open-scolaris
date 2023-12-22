@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'accounts',
-    'scolaris_app'
+    'scolaris_app',
+    'django_extensions'
 ]
 
 MIDDLEWARE = [

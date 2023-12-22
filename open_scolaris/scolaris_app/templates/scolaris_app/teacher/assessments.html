@@ -7,7 +7,7 @@
     <ul>
         {% for s,asmts in subs %}
             <li>{{s}}</li>
-                {% if a %}
+                {% if asmts %}
                     <ul>
                     {% for a in asmts %}
                         <li><a href="{% url 'assessment-detail' a.id %}">{{a}}</a></li>

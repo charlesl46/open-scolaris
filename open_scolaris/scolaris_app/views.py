@@ -68,7 +68,6 @@ def subject(request : HttpRequest,id : int):
     return render(request,"scolaris_app/student/subject_detail.html",{"sub" : sub,"mks" : marks})
 
 def teacher_assessments(request : HttpRequest):
-
     teacher : User = request.user
     subs = []
     for sub in teacher.subjects.all():
@@ -81,5 +80,29 @@ def assessment_detail(request : HttpRequest,id : int):
     a = get_object_or_404(Assessment,id=id)
     if request.user not in a.subject.teachers.all():
         return forbiden_access(request)
-    marks = a.marks.all()
+    class_object = a.class_object
+    students = class_object.students.all()
+    marks = []
+    for student in students:
+        student : User
+        mark,_ = Mark.objects.get_or_create(student=student,assessment=a)
+        marks.append((student,mark))
+
     return render(request,"scolaris_app/teacher/assessment_detail.html",{"marks" : marks,"a" : a})
+
+@csrf_exempt
+@require_POST
+def give_mark(request : HttpRequest,assessment_id : int,student_id : int):
+    a = get_object_or_404(Assessment,id=assessment_id)
+    stud = get_object_or_404(User,id=student_id)
+    try:
+        note = float(request.POST.get("value").strip())
+    except:
+        return JsonResponse({"status" : 500,"error" : f"La note doit être comprise entre {a.min} et {a.off} pour cette évaluation"})
+    if note < a.min or note > a.off:
+        return JsonResponse({"status" : 500,"error" : f"La note doit être comprise entre {a.min} et {a.off} pour cette évaluation"})
+    else:
+        mark,_ = Mark.objects.get_or_create(student=stud,assessment=a)
+        mark.mark = note
+        mark.save()
+        return JsonResponse({"status" : 200,"value" : str(note).replace(".",",")})

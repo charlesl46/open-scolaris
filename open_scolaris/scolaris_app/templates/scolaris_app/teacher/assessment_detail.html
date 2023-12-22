@@ -1,13 +1,66 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<script src="https://fomantic-ui.com/javascript/library/tablesort.js"></script>
 <div class="ui segment">
     <h2 class="ui header">Évaluation {{a.title}}</h2>
-    <h4 class="ui header">Notes :</h4>
-    <ul>
-        {% for mk in marks %}
-            <li>{{mk.student.full_name}} ({{mk}})</li>
-        {% endfor %}
-    </ul>
+    <h2 class="ui header">Notes :</h2>
+    {% if marks %}
+    <table class="ui sortable celled table">
+        <thead>
+          <tr><th>Élève</th>
+          <th>Note (/{{a.off}})</th>
+        </tr></thead>
+        <tbody>
+            {% for stud,mk in marks %}
+            <tr>
+                <td>
+                    {{stud.full_name}}
+                </td>
+                {% if mk.mark %}
+                <td class="positive">
+                    {{mk.mark}}
+                </td>
+                {% else %}
+                <td class="negative">
+                    <div class="ui action input">
+                        <input type="number" class="givemarkinput" min="{{a.min}}" max="{{a.off}}" placeholder="">
+                        <button name="{{stud.id}}" class="ui button validatebutton">Valider</button>
+                    </div>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
 </div>
+<script>
+    $("table").tablesort();
+    $(".validatebutton").click(function(){
+        var button = $(this);
+        var student_id = button.attr("name");
+        var givemarkinput = button.prev(".givemarkinput");
+        var value = givemarkinput.val();
+        var url = `assessment_id/give-mark/student_id/`.replace("assessment_id","{{a.id}}").replace("student_id",student_id);
+        console.log(url);
+        $.post(url,{value : value},function(response){
+            console.log(response);
+            if (response.status == 200){
+                var markCell = button.closest('td');
+                console.log(markCell);
+                markCell.html(response.value);
+                markCell.removeClass('negative').addClass('positive');
+            }else{
+                $.toast({
+                    position : "top center",
+                    message: response.error
+                });
+            }
+
+        });
+
+    });
+
+</script>
 {% endblock %}

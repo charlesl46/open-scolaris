@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from accounts.views import login_view,logout_view
-from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done,subjects,subject,teacher_assessments,assessment_detail
+from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done,subjects,subject,teacher_assessments,assessment_detail,give_mark
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
@@ -35,4 +35,5 @@ urlpatterns = [
     path('subjects/<int:id>/',subject,name="subject"),
     path('teacher/assessments/',teacher_assessments,name="teacher-assessments"),
     path('teacher/assessments/<int:id>',assessment_detail,name="assessment-detail"),
+    path('teacher/assessments/<int:assessment_id>/give-mark/<int:student_id>/',give_mark,name="give-mark"),
 ]
