@@ -6,7 +6,7 @@
     <h2 class="ui header">Évaluation {{a.title}}</h2>
     <h2 class="ui header">Notes :</h2>
     {% if marks %}
-    <table class="ui sortable celled table">
+    <table id="table" class="ui sortable celled table">
         <thead>
           <tr><th>Élève</th>
           <th>Note (/{{a.off}})</th>
@@ -18,12 +18,12 @@
                     {{stud.full_name}}
                 </td>
                 {% if mk.mark %}
-                <td class="positive">
-                    {{mk.mark}}
+                <td class="positive selectable" data-tooltip="Cliquer pour modifier la note" data-position="top center">
+                    <a name="{{stud.id}}" class="modifybutton">{{mk.mark}}</a>
                 </td>
                 {% else %}
                 <td class="negative">
-                    <div class="ui action input">
+                    <div style="margin-left: 10px;" class="ui action input">
                         <input type="number" class="givemarkinput" min="{{a.min}}" max="{{a.off}}" placeholder="">
                         <button name="{{stud.id}}" class="ui button validatebutton">Valider</button>
                     </div>
@@ -37,7 +37,9 @@
 </div>
 <script>
     $("table").tablesort();
-    $(".validatebutton").click(function(){
+
+        $("#table").on("click", ".validatebutton", function() {
+        console.log("clicked on validate button");
         var button = $(this);
         var student_id = button.attr("name");
         var givemarkinput = button.prev(".givemarkinput");
@@ -48,19 +50,39 @@
             console.log(response);
             if (response.status == 200){
                 var markCell = button.closest('td');
-                console.log(markCell);
-                markCell.html(response.value);
-                markCell.removeClass('negative').addClass('positive');
+                markCell.attr("data-tooltip", "Cliquer pour modifier la note");
+                markCell.addClass("positive").addClass("selectable").removeClass("negative");
+                markCell.html(`<a name="${student_id}" class="modifybutton">${response.value}</a>`);
             }else{
                 $.toast({
                     position : "top center",
                     message: response.error
                 });
             }
+        });
 
         });
 
-    });
+        $("#table").on("click", ".modifybutton", function() {
+            var button = $(this);
+            var stud_id = button.attr("name");
+            var cell = button.closest("td");
+
+            var initialContent = cell.html();
+
+            if (!cell.find(".givemarkinput").length) {
+                // Remplacer le contenu uniquement si aucun champ d'entrée n'est présent
+                cell.html('<div class="ui action input"> '+
+                    '<input style="margin-left: 10px;" type="number" class="givemarkinput" min="{{a.min}}" max="{{a.off}}" placeholder="">'+
+                    `<button name="${stud_id}" class="ui button validatebutton">Valider</button>`+
+                    '</div>');
+            } else {
+                // Restaurer le contenu initial
+                cell.html(initialContent);
+            }
+        });
+
+
 
 </script>
 {% endblock %}
