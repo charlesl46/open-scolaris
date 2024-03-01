@@ -2,6 +2,8 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
 from django.http import HttpRequest
 from django.contrib import messages
+from notifications.signals import notify
+import datetime
 
 def login_view(request : HttpRequest):
     if request.method == "POST":
@@ -13,6 +15,7 @@ def login_view(request : HttpRequest):
         if user:
             login(request,user=user)
             messages.info(request,f"Bienvenue, {user.get_username()}")
+            notify.send(user,recipient=user,verb=f"Nouvelle connexion",level='positive',description=f"Vous vous êtes connecté à {datetime.datetime.now()}")
             return redirect("home")
     return render(request,"accounts/login.html")
 

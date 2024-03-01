@@ -5,12 +5,15 @@ from django.dispatch import receiver
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
+from django.utils.text import slugify
+import uuid
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
     code = models.CharField(max_length=20)
     teachers = models.ManyToManyField(AUTH_USER_MODEL,related_name="subjects",limit_choices_to={"role" : "T"})
     description = models.TextField(max_length=200,blank=True,null=True)
+    slug = models.SlugField(unique=True,blank=True)
 
     def __str__(self) -> str:
         return self.name
@@ -18,16 +21,27 @@ class Subject(models.Model):
     @property
     def teachers_list(self):
         return " / ".join([t.full_name for t in self.teachers.all()])
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
 class Class(models.Model):
     code = models.CharField(max_length=20)
-    subjects_taken = models.ManyToManyField(Subject)
+    subjects_taken = models.ManyToManyField(Subject,blank=True)
+    slug = models.SlugField(unique=True,blank=True)
 
     def __str__(self) -> str:
         return self.code
     
     def nb_students(self) -> int:
         return len(self.students.all())
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.code)
+        super().save(*args, **kwargs)
     
 class Homework(models.Model):
     title = models.CharField(max_length=50)
@@ -36,6 +50,7 @@ class Homework(models.Model):
     class_object = models.ForeignKey(Class,on_delete=models.CASCADE,null=True)
     due_date = models.DateTimeField(blank=True,null=True)
     due_course = models.ForeignKey("Course",on_delete=models.CASCADE,blank=True,null=True,help_text="Le cours avant lequel le devoir doit être effectué, ne peut être qu'un cours de la classe dont c'est le devoir")
+    uuid = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
 
     def __str__(self) -> str:
         return self.title
@@ -77,6 +92,7 @@ class Course(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
     class_object = models.ForeignKey(Class,on_delete=models.CASCADE,null=True)
     teacher = models.ForeignKey(AUTH_USER_MODEL,on_delete=models.SET_NULL,limit_choices_to={"role" : "T"},null=True)
+    uuid = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
 
     def __str__(self):
         formatted_date_begin = self.date_begin.strftime('%Y-%m-%d %H:%M') if self.date_begin else 'N/A'
@@ -103,7 +119,7 @@ class Assessment(models.Model):
     course = models.ForeignKey(Course,on_delete=models.CASCADE,null=True)
     off = models.SmallIntegerField(default=20)
     min = models.SmallIntegerField(default=0)
-
+    uuid = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
 
     @property
     def date(self):
@@ -135,6 +151,7 @@ class Mark(models.Model):
     mark = models.FloatField(null=True,blank=True)
     student = models.ForeignKey(AUTH_USER_MODEL,on_delete=models.CASCADE,null=True)
     assessment = models.ForeignKey(Assessment,related_name="marks",on_delete=models.CASCADE,null=True)
+    uuid = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
 
     def __str__(self) -> str:
         if self.mark:
@@ -155,3 +172,18 @@ class CanteenMenu(models.Model):
     main = models.CharField(max_length=50)
     dessert = models.CharField(max_length=50)
     date = models.DateField(unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4,editable=False,unique=True)
+
+    def __str__(self):
+        return f"Menu du {self.date}"
+
+class OpenScolarisMessage(models.Model):
+    subject = models.CharField(max_length=50)
+    content = models.TextField(max_length=1000)
+    sent_at = models.DateTimeField(auto_now_add=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    sender = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="os_messages_sent")
+    recipients = models.ManyToManyField("accounts.User", related_name="os_messages_received")
+
+    def __str__(self):
+        return f"{self.subject} (envoyé par {self.sender})"

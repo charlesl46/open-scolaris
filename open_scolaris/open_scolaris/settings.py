@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'accounts',
     'scolaris_app',
-    'django_extensions'
+    'django_extensions',
+    'notifications'
 ]
 
 MIDDLEWARE = [
@@ -133,3 +134,7 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = "accounts.User"
+
+DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
+
+LOGIN_URL = "login/"

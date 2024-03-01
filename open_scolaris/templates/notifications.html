@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% load notifications_tags %}
+{% block content %}
+    <h2 id="h2" class="ui header">Notifications</h2>
+    {% if qs.unread %}
+        {% for notification in qs.unread %}
+        <div class="ui {{notification.level}} message">
+            <i id="notif-{{notification.id}}" class="close icon"></i>
+            <script>
+                $("#notif-{{notification.id}}").click(function(){
+                    var icon = $(this);
+                    var message = icon.parent(".message");
+                    $.post("{% url 'notifications-mark-as-read' notification.id %}",{},(response)=>{
+                        var status = response.status;
+                        console.log(response)
+                        var unread_count = response.unread_count;
+                        if (status == "ok"){
+                            message.transition("browse");
+                            if (unread_count == 0){
+                                $("#unread_count").hide();
+                                $(".bell").addClass("outline");
+                                $("#mark_all").hide();
+                                document.getElementById("h2").insertAdjacentHTML("afterend","<p>Vous n'avez pas de notifications</p>");
+                            }
+                            $("#unread_count").text(unread_count);
+                        }
+                    });
+                }
+                );
+            </script>
+            <div class="header">
+                {{notification.verb}}
+            </div>
+            <p>{{ notification.description }}</p>
+            <p style="font-style: italic;">{{notification.timestamp}}</p>
+            {% if notification.data.type == "follow_request" %}
+                <a href="{% url 'user_profile' notification.actor.pk %}">Profil</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div id="mark_all" class="ui labeled button">
+            <a href="{% url 'notifications-mark-all-as-read' %}" class="ui button">
+                <i class="check double icon"></i> Tout marquer comme lu
+            </a>
+            <p class="ui basic label">
+            {{qs.unread.count}}
+            </p>
+        </div>
+        
+    {% else %}
+    <p>Vous n'avez pas de notifications</p>
+    {% endif %}
+    
+{% endblock %}

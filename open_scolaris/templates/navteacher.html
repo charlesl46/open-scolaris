@@ -1,18 +1,35 @@
 <div class="ui secondary menu" style="margin: 10px; margin-top: 5px;">
   <a href="{% url 'home' %}" class="item"><i class="home icon"></i>Accueil</a>
-  <a href="{% url 'calendar' %}" class="item"><i class="calendar alternate icon"></i>Emploi du temps</a>
+  <a href="{% url 'calendar' %}" class="item"><i class="calendar alternate outline icon"></i>Emploi du temps</a>
   <a href="{% url 'subjects' %}" class="item"><i class="book icon"></i>Cours</a>
   <a href="{% url 'marks' %}" class="item"><i class="percentage icon"></i>Notes</a>
-  <a href="{% url 'homework' %}" class="item"><i class="clipboard list icon"></i>Devoirs</a>
+  <a href="{% url 'homework' %}" class="item"><i class="clipboard outline icon"></i>Devoirs</a>
   <div class="right menu">
     <div class="item">
       <div class="ui icon input">
-        <input type="text" placeholder="Search...">
+        <input type="text" placeholder="Rechercher...">
         <i class="search link icon"></i>
       </div>
     </div>
+    {% load notifications_tags %}
+
+    {% notifications_unread as unread_count %}
+    <a href="{% url 'notifications' %}" class="item {% if active == 'notifications' %}active{% endif %}">
+        {% if unread_count %}
+        <i class="bell icon"></i> Notifications
+        <div id="unread_count" class="bottom circular floating ui red label">{{unread_count}}</div>
+        {% else %}
+        <i class="bell outline icon"></i> Notifications
+        {% endif %}
+    </a>
+
+    {% load custom_tags %}
+
+    <div class="ui item">
+      <i class="clock outline icon"></i> <span id="time_nav">{% get_now %}</span>
+    </div>
     <a href="{% url 'logout' %}" class="ui item">
-      <i class="sign out alternate icon"></i>Logout
+      <i class="sign out alternate icon"></i>Déconnexion
     </a>
   </div>
 </div>

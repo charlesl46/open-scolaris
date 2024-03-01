@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion,CanteenMenu
+from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion,CanteenMenu,OpenScolarisMessage
 
 class MarkAdmin(admin.ModelAdmin):
     list_display = ("__str__","student","subject",)
@@ -22,3 +22,4 @@ admin.site.register(Subject)
 admin.site.register(Mark,MarkAdmin)
 admin.site.register(Assessment,AssessmentAdmin)
 admin.site.register(CanteenMenu)
+admin.site.register(OpenScolarisMessage)

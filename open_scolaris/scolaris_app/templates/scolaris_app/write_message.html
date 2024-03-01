@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form class="ui form">
+    <h2 class="ui header">Nouveau message</h2>
+    <div class="field">
+      <label>Objet</label>
+      <input type="text" name="first-name">
+    </div>
+    <div class="field">
+        <label>Contenu</label>
+        <textarea></textarea>
+    </div>
+
+    <div class="inline field">
+        <div class="ui toggle checkbox">
+          <input type="checkbox" tabindex="0" class="hidden">
+          <label>Ajouter une pièce jointe</label>
+        </div>
+    </div>
+    <div id="fileinput" class="ui file input">
+        <input id="attachment" type="file" multiple onchange="updateFileName()">
+    </div>
+</form> 
+<div id="files_list" class="ui relaxed divided list">
+
+</div>
+
+<script>
+    function updateFileName(){
+        var files = document.getElementById("attachment").files;
+        for (var i = 0; i < files.length; i++) {
+            var name = files[i].name;
+            var extension = name.split('.').pop().toLowerCase();
+
+            var iconClass = getIconClass(extension);
+
+            var fileSize;
+
+            if (files[i].size < 1024 * 1024) {
+                fileSize = (files[i].size / 1024).toFixed(2) + " Ko"; // Convertir en Ko si la taille est inférieure à 1 Mo
+            } else {
+                fileSize = (files[i].size / (1024 * 1024)).toFixed(2) + " Mo"; // Convertir en Mo sinon
+            }
+
+            $("#files_list").append(
+                $('<div/>', {
+                    class: 'item',
+                    html: `<i class="large ${iconClass} middle aligned icon"></i>
+                    <div class="content">
+                        <p class="header">${name}</p>
+                        <div class="description">${fileSize}</div> <!-- Afficher la taille du fichier -->
+                    </div>`
+                })
+            );
+        }
+    }
+
+
+
+    function getIconClass(extension) {
+        var iconMap = {
+            '3ds': 'file',
+            'ai': 'file',
+            'apk': 'file',
+            'app': 'file',
+            'avi': 'file video',
+            'bmp': 'file image',
+            'c': 'file code',
+            'cpp': 'file code',
+            'css': 'file code',
+            'csv': 'database',
+            'dat': 'file',
+            'dmg': 'file archive',
+            'doc': 'file word',
+            'docx': 'file word',
+            'exe': 'file',
+            'flv': 'file video',
+            'gif': 'file image',
+            'h': 'file code',
+            'html': 'file code',
+            'ics': 'file alternate',
+            'iso': 'file archive',
+            'java': 'file code',
+            'jpeg': 'file image',
+            'jpg': 'file image',
+            'js': 'file code',
+            'json': 'file code',
+            'log': 'file alternate',
+            'm4a': 'file audio',
+            'm4v': 'file video',
+            'mov': 'file video',
+            'mp3': 'file audio',
+            'mp4': 'file video',
+            'mpeg': 'file video',
+            'mpg': 'file video',
+            'odp': 'file powerpoint',
+            'ods': 'file excel',
+            'odt': 'file word',
+            'ogg': 'file audio',
+            'pdf': 'file pdf',
+            'php': 'file code',
+            'png': 'file image',
+            'ppt': 'file powerpoint',
+            'pptx': 'file powerpoint',
+            'psd': 'file image',
+            'py': 'file code',
+            'rar': 'file archive',
+            'rb': 'file code',
+            'rtf': 'file alternate',
+            'scss': 'file code',
+            'sql': 'file code',
+            'svg': 'file image',
+            'tar': 'file archive',
+            'tgz': 'file archive',
+            'tif': 'file image',
+            'tiff': 'file image',
+            'txt': 'file alternate',
+            'wav': 'file audio',
+            'webm': 'file video',
+            'wma': 'file audio',
+            'wmv': 'file video',
+            'xls': 'file excel',
+            'xlsx': 'file excel',
+            'xml': 'file code',
+            'zip': 'file archive'
+        };
+
+
+        return iconMap[extension] || 'file';
+    }
+
+
+    document.addEventListener("DOMContentLoaded",function(){
+        $("#fileinput").hide();
+    });
+
+    $('.ui.checkbox').checkbox({
+        onChecked : function(){
+            $("#fileinput").show();
+        },
+        onUnchecked : function(){
+            $("#fileinput").hide();
+        }
+    });
+</script>
+{% endblock %}

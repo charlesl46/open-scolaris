@@ -18,6 +18,8 @@ from django.contrib import admin
 from django.urls import path,include
 from accounts.views import login_view,logout_view
 from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done,subjects,subject,teacher_assessments,assessment_detail,give_mark
+import scolaris_app.notifications_views as views
+from scolaris_app.messages_views import write_message
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
@@ -32,8 +34,12 @@ urlpatterns = [
     path('homework/<int:id>/',homework_detail,name="homework-detail"),
     path('homework/<int:id>/mark-as-done',mark_as_done,name="mark-as-done"),
     path('subjects/',subjects,name="subjects"),
-    path('subjects/<int:id>/',subject,name="subject"),
+    path('subjects/<str:slug>/',subject,name="subject"),
     path('teacher/assessments/',teacher_assessments,name="teacher-assessments"),
     path('teacher/assessments/<int:id>',assessment_detail,name="assessment-detail"),
     path('teacher/assessments/<int:assessment_id>/give-mark/<int:student_id>/',give_mark,name="give-mark"),
+    path('notifications/',views.notifications_view,name="notifications"),
+    path('notifications-mark-all-as-read/',views.mark_all_as_read,name="notifications-mark-all-as-read"),
+    path('notifications-mark-as-read/<int:id>/',views.mark_as_read,name="notifications-mark-as-read"),
+    path('messages/new',write_message,name="write-message")
 ]

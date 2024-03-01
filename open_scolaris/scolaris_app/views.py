@@ -3,13 +3,16 @@ from django.http import HttpRequest,HttpResponse,HttpResponseForbidden,JsonRespo
 from accounts.models import User
 from scolaris_app.models import Course,Mark,Homework,HomeworkCompletion,Subject,Assessment,CanteenMenu
 import datetime
+from django.contrib.auth.decorators import login_required
 
 def forbiden_access(request : HttpRequest):
     return render(request,"scolaris_app/forbidden_access.html")
 
+@login_required
 def home(request : HttpRequest):
     return render(request,"scolaris_app/home.html")
 
+@login_required
 def calendar(request : HttpRequest):
     user : User = request.user
     if user.is_student():
@@ -18,6 +21,7 @@ def calendar(request : HttpRequest):
     else:
         return HttpResponse("Pas encore implémenté")
     
+@login_required
 def marks(request : HttpRequest):
     user : User = request.user
     if user.is_student():
@@ -26,12 +30,14 @@ def marks(request : HttpRequest):
     else:
         return HttpResponse("On ne devrait pas arriver ici")
     
+@login_required
 def mark(request : HttpRequest,id : int):
     mark = get_object_or_404(Mark,id=id)
     if mark.student != request.user:
         return forbiden_access(request)
     return render(request,"scolaris_app/student/mark/mark.html",{"mark" : mark})
 
+@login_required
 def homework(request : HttpRequest):
     user : User = request.user
     homeworks = Homework.objects.filter(class_object=user.class_object).all()
@@ -40,6 +46,7 @@ def homework(request : HttpRequest):
         homeworks = [(hw,hwc) for hw,hwc in zip(homeworks,homeworks_completions)]
     return render(request,"scolaris_app/student/homework/homework.html",{"homeworks" : homeworks})
 
+@login_required
 def homework_detail(request : HttpRequest,id : int):
     hw = get_object_or_404(Homework,id=id)
     if hw.class_object != request.user.class_object:
@@ -51,24 +58,28 @@ from django.views.decorators.http import require_POST
 
 @csrf_exempt
 @require_POST
+@login_required
 def mark_as_done(request : HttpRequest,id : int):
     hwcomp = get_object_or_404(HomeworkCompletion,id=id)
     hwcomp.toggle_done()
     print(f"passée à {hwcomp.done}")
     return JsonResponse({"done" : hwcomp.done})
 
+@login_required
 def subjects(request : HttpRequest):
     user : User = request.user
     class_object = user.class_object
     subs = class_object.subjects_taken.all()
     return render(request,"scolaris_app/student/subject/subjects.html",{"subjects" : subs,"class" : class_object})
 
-def subject(request : HttpRequest,id : int):
-    sub = get_object_or_404(Subject,id=id)
+@login_required
+def subject(request : HttpRequest,slug : str):
+    sub = get_object_or_404(Subject,slug=slug)
     assmts = Assessment.objects.filter(subject=sub).all()
     marks = Mark.objects.filter(student=request.user,assessment__in=assmts)
     return render(request,"scolaris_app/student/subject/subject_detail.html",{"sub" : sub,"mks" : marks})
 
+@login_required
 def teacher_assessments(request : HttpRequest):
     teacher : User = request.user
     subs = []
@@ -78,6 +89,7 @@ def teacher_assessments(request : HttpRequest):
     subs_verb = ",".join([str(sub[0]) for sub in subs])
     return render(request,"scolaris_app/teacher/assessments.html",{"subs" : subs,"verb" : subs_verb})
 
+@login_required
 def assessment_detail(request : HttpRequest,id : int):
     a = get_object_or_404(Assessment,id=id)
     if request.user not in a.subject.teachers.all():
@@ -94,6 +106,7 @@ def assessment_detail(request : HttpRequest,id : int):
 
 @csrf_exempt
 @require_POST
+@login_required
 def give_mark(request : HttpRequest,assessment_id : int,student_id : int):
     a = get_object_or_404(Assessment,id=assessment_id)
     stud = get_object_or_404(User,id=student_id)

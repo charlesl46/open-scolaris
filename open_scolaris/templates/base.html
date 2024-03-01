@@ -31,5 +31,22 @@
             </div>
         </div>
     </div>
+    <script>
+        setInterval(() => {
+            var date = new Date();
+            var heures = ("0" + date.getHours()).slice(-2);
+            var minutes = ("0" + date.getMinutes()).slice(-2);
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            var dateString = date.toLocaleDateString('fr-FR', options);
+            
+            var dateStringCapitalized = dateString.replace(/\b\w/g, function(char) {
+                return char.toUpperCase();
+            });
+
+            var timeString = heures + ":" + minutes;
+            $("#time_nav").text(timeString + " - " + dateStringCapitalized);
+        }, 100);
+
+    </script>
 </body>
 </html>

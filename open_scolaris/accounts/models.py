@@ -45,14 +45,7 @@ class User(AbstractUser):
     @property
     def due_homework_count(self):
         return len([hw for hw in self.get_n_next_due_homework() if not hw[1].done])
-    
-    def menu_today(self):
-        today = datetime.datetime.now()
-        try:
-            canteen_menu = CanteenMenu.objects.get(date=today)
-        except CanteenMenu.DoesNotExist:
-            canteen_menu = None
-        return canteen_menu
+
 
 
         

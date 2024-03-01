@@ -14,7 +14,7 @@
             {% for sub in subjects %}
             <tr>
                 <td>
-                    {{sub}}
+                    <a href="{% url 'subject' sub.slug %}">{{sub}}</a>
                 </td>
                 <td>
                     {{sub.description}}
