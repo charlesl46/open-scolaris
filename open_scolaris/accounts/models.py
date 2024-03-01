@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from scolaris_app.models import Class
 from django.core.exceptions import ValidationError
-from scolaris_app.models import Course,Homework,HomeworkCompletion,CanteenMenu
+from scolaris_app.models import Course,Homework,HomeworkCompletion,CanteenMenu,OpenScolarisMessage
 import datetime
 
 
@@ -12,7 +12,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     role = models.CharField(max_length=1,choices=ROLE_CHOICES)
-    class_object = models.ForeignKey(Class,on_delete=models.SET_NULL,related_name="students",null=True)
+    class_object = models.ForeignKey(Class,on_delete=models.SET_NULL,related_name="students",null=True,blank=True)
 
     @property
     def full_name(self):
@@ -45,6 +45,11 @@ class User(AbstractUser):
     @property
     def due_homework_count(self):
         return len([hw for hw in self.get_n_next_due_homework() if not hw[1].done])
+    
+    @property
+    def unread_messages(self):
+        messages = OpenScolarisMessage.objects.filter(recipients=self).all()
+        return messages
 
 
 

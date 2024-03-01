@@ -138,3 +138,6 @@ AUTH_USER_MODEL = "accounts.User"
 DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
 
 LOGIN_URL = "login/"
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

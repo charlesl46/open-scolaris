@@ -5,13 +5,28 @@
     <h2 class="ui header">Nouveau message</h2>
     <h4 class="ui dividing header">Destinataires</h4>
     {% csrf_token %}
+    <div class="field">
+        <div class="ui search">
+            <div class="ui icon input">
+              <input id="search_recipients" class="prompt" type="text" placeholder="Rechercher...">
+              <i class="search icon"></i>
+            </div>
+            <div class="results transition"></div>
+        </div>
+    </div>
+    <div id="recipient_labels" class="ui labels">
+
+    </div>
 
     <div class="ui field">
-        <select name="recipients" class="ui fluid search dropdown" multiple="">
-            <option value="">Sélectionner des destinataires</option>
-            {% for u in users%}
-                <option value="{{u.username}}">{{u.full_name}} ({{u.username}})</option>
-            {% endfor %}
+        <label>Country</label>
+        <select class="ui fluid search dropdown" multiple="">
+            <option value="">Select Country</option>
+            <option value="AF">Afghanistan</option>
+            <option value="AX">Åland Islands</option>
+            <option value="AL">Albania</option>
+            <option value="DZ">Algeria</option>
+            <option value="AS">American Samoa</option>
         </select>
     </div>
 
@@ -153,6 +168,53 @@
 
         return iconMap[extension] || 'file';
     }
+
+    var last_value = null;
+
+    $("#search_recipients").keyup(function(){
+        
+        var query = $("#search_recipients").val();
+        if (query != ""){
+            if (last_value != query){
+                $(".results").addClass("visible");
+                console.log(query);
+                last_value = query;
+                $(".results").html("");
+                $(".search").addClass("loading");
+                $.post("{% url 'search-recipients' %}",{query : query},(response)=>{
+                    $(".search").removeClass("loading");
+                    //console.log(response);
+                    if (response.results.length > 0){
+                        $.each(response.results, function(index,result){
+                            console.log(result);
+                            $(".results").append(
+                                `<a class="result" id="${result.username}"><div class="content"><div class="title">${result.user_found}</div></div></a>`
+                            )
+                        });
+                        $(".results a.result").click(function(){
+                            var result = $(this);
+                            $("#recipient_labels").append(
+                                `<div id="${result.attr("id")}" class="ui label">${result.attr("id")}<i id="${result.attr("id")}" class="close icon"></i></div>`
+                            );
+                            $(".results").removeClass("visible");
+                            $("#search_recipients").val("");
+                            
+                        });
+                        $("i.close").click(function(){
+                            console.log("clicked icon");
+                            var id = $(this).attr("id");
+                            $(`div.ui.label#${id}`).hide();
+                        });
+                    }else{
+                        $(".results").removeClass("visible");
+                    }
+                });
+            }
+        }else{
+            $(".results").removeClass("visible");
+        }
+    });
+
 
     document.addEventListener("DOMContentLoaded",function(){
         $("#fileinput").hide();

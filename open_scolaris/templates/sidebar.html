@@ -53,16 +53,35 @@
 
 </div>
 
+{% with user.unread_messages as urm %}
+
 <div class="ui raised segment">
     <h2 class="ui header">Messagerie</h2>
-    <div class="ui placeholder segment">
-        <div class="ui icon header">
-            <i class="comment outline icon"></i>
-            Aucun message
+    {% if urm %}
+        <div class="ui list">
+            {% for u in urm %}
+                <div class="item">
+                    <i class="large middle aligned comment icon"></i>
+                    <div class="content">
+                        <a class="header"><em>{{u.subject}}</em></a>
+                        <div class="description">{{u.sent_at}}</div>
+                    </div>
+                </div>
+            {% endfor %}
         </div>
-        <a href="{% url 'write-message' %}" class="ui primary button">Nouveau message</a>
-      </div>
+    {% else %}
+        <div class="ui placeholder segment">
+            <div class="ui icon header">
+                <i class="comment outline icon"></i>
+                Aucun message
+            </div>
+            <a href="{% url 'write-message' %}" class="ui primary button">Nouveau message</a>
+        </div>
+    {% endif %}
 </div>
+
+{% endwith %}
+
 
 {% load custom_tags %}
 {% menu_today as menu %}

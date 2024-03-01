@@ -176,6 +176,12 @@ class CanteenMenu(models.Model):
 
     def __str__(self):
         return f"Menu du {self.date}"
+    
+class OSMessageAttachment(models.Model):
+    file = models.FileField(upload_to='attachments/')
+
+    def __str__(self):
+        return self.file.name
 
 class OpenScolarisMessage(models.Model):
     subject = models.CharField(max_length=50)
@@ -184,6 +190,7 @@ class OpenScolarisMessage(models.Model):
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     sender = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="os_messages_sent")
     recipients = models.ManyToManyField("accounts.User", related_name="os_messages_received")
+    attachments = models.ManyToManyField(OSMessageAttachment,blank=True)
 
     def __str__(self):
         return f"{self.subject} (envoyé par {self.sender})"
