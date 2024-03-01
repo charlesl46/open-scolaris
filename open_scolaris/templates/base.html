@@ -6,20 +6,12 @@
     <title>OpenScolaris</title>
 
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static '/fomantic/semantic.min.css' %}">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    {% load static %}
 </head>
 <body>
-    <style>
-        @font-face {
-            font-family: 'Inter';
-            src: url('{% static "inter/Inter-Regular.ttf" %}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
-    </style>
     {% if user.is_student %}
         {% include 'navstudent.html' %}
     {% else %}
@@ -27,11 +19,17 @@
     {% endif %}
     {% include 'messages.html' %}
     <div style="margin-top: 50px; margin-left: 3%; margin-right: 3%;">
-        {% block content %}
-        {% endblock %}
+        <div class="ui grid">
+            <div class="twelve wide column">
+                <div class="ui raised segment">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+            <div class="four wide column">
+                {% include 'sidebar.html' %}
+            </div>
+        </div>
     </div>
-
-
-
 </body>
 </html>

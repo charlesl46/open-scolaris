@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="ui header">{{mark.assessment.title}} ({{mark.assessment.nb_marks}} notes)</h2>
+
+    <ul>
+        <li>Évaluée le {{mark.assessment.date}}</li>
+        <li>Matière : {{mark.assessment.subject}}</li>
+        <li>Moyenne de la classe {{mark.mean}}</li>
+    </ul>
+{% endblock %}

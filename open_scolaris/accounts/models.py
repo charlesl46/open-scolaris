@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from scolaris_app.models import Class
 from django.core.exceptions import ValidationError
+from scolaris_app.models import Course,Homework,HomeworkCompletion,CanteenMenu
+import datetime
 
 
 ROLE_CHOICES = (("S","Élève"),("T","Enseignant"),("A","Administratif"))
@@ -28,3 +30,29 @@ class User(AbstractUser):
     def clean(self):
         if self.role == "S" and not self.class_object:
             raise ValidationError("Un élève doit impérativement appartenir à une classe")
+        
+    def get_n_upcoming_classes(self,n : int = 3):
+        cours_list = Course.objects.filter(class_object=self.class_object).order_by("date_begin").all()[:n]
+        return cours_list
+    
+    def get_n_next_due_homework(self,n : int = 3):
+        homeworks = Homework.objects.filter(class_object=self.class_object).order_by("due_date").all()[:n]
+        if homeworks:
+            homeworks_completions = [HomeworkCompletion.objects.get(homework=hw,student=self) for hw in homeworks]
+            homeworks = [(hw,hwc) for hw,hwc in zip(homeworks,homeworks_completions)]
+        return homeworks
+    
+    @property
+    def due_homework_count(self):
+        return len([hw for hw in self.get_n_next_due_homework() if not hw[1].done])
+    
+    def menu_today(self):
+        today = datetime.datetime.now()
+        try:
+            canteen_menu = CanteenMenu.objects.get(date=today)
+        except CanteenMenu.DoesNotExist:
+            canteen_menu = None
+        return canteen_menu
+
+
+        

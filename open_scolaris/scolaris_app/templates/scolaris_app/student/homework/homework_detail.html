@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="ui header">{{hw.title}}</h2>
+    <h4 class="ui header">Matière : {{hw.subject.name}}</h4>
+    <p>Description : {{hw.description}}</p>
+{% endblock %}

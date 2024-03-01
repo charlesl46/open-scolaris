@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="ui header">Vos cours</h2>
+    <table style="width: 90%; margin: auto;" class="ui very basic collapsing celled large table">
+        <thead>
+            <tr>
+                <th><i class="graduation cap icon"></i>Cours</th>
+                <th><i class="info circle icon"></i>Description</th>
+                <th><i class="user icon"></i>Enseignants</th>
+            </tr>            
+        </thead>
+        <tbody>
+            {% for sub in subjects %}
+            <tr>
+                <td>
+                    {{sub}}
+                </td>
+                <td>
+                    {{sub.description}}
+                </td>
+                <td>
+                    {{sub.teachers_list}}
+                </td>
+            </tr>
+          {% endfor %}
+
+        </tbody>
+    </table>
+{% endblock %}

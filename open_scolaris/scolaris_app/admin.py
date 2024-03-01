@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion
+from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion,CanteenMenu
 
 class MarkAdmin(admin.ModelAdmin):
     list_display = ("__str__","student","subject",)
@@ -21,3 +21,4 @@ admin.site.register(Homework,HomeworkAdmin)
 admin.site.register(Subject)
 admin.site.register(Mark,MarkAdmin)
 admin.site.register(Assessment,AssessmentAdmin)
+admin.site.register(CanteenMenu)

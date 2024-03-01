@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="ui segment">
     <h2 class="ui header">Vos cours</h2>
     <ul>
         {% for cours in cours_list %}
             <li>{{cours}}</li>
         {% endfor %}
     </ul>
-</div>
 {% endblock %}

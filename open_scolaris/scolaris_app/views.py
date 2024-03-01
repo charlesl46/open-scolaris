@@ -1,7 +1,8 @@
 from django.shortcuts import render,get_object_or_404
 from django.http import HttpRequest,HttpResponse,HttpResponseForbidden,JsonResponse
 from accounts.models import User
-from scolaris_app.models import Course,Mark,Homework,HomeworkCompletion,Subject,Assessment
+from scolaris_app.models import Course,Mark,Homework,HomeworkCompletion,Subject,Assessment,CanteenMenu
+import datetime
 
 def forbiden_access(request : HttpRequest):
     return render(request,"scolaris_app/forbidden_access.html")
@@ -12,7 +13,7 @@ def home(request : HttpRequest):
 def calendar(request : HttpRequest):
     user : User = request.user
     if user.is_student():
-        cours_list = Course.objects.filter(class_object=user.class_object).all()
+        cours_list = request.user.get_n_upcoming_classes(n = 10)
         return render(request,"scolaris_app/calendar.html",{"cours_list" : cours_list})
     else:
         return HttpResponse("Pas encore implémenté")
@@ -21,7 +22,7 @@ def marks(request : HttpRequest):
     user : User = request.user
     if user.is_student():
         marks = Mark.objects.filter(student=user).all()
-        return render(request,"scolaris_app/student/marks.html",{"marks" : marks})
+        return render(request,"scolaris_app/student/mark/marks.html",{"marks" : marks})
     else:
         return HttpResponse("On ne devrait pas arriver ici")
     
@@ -29,20 +30,21 @@ def mark(request : HttpRequest,id : int):
     mark = get_object_or_404(Mark,id=id)
     if mark.student != request.user:
         return forbiden_access(request)
-    return render(request,"scolaris_app/student/mark.html",{"mark" : mark})
+    return render(request,"scolaris_app/student/mark/mark.html",{"mark" : mark})
 
 def homework(request : HttpRequest):
     user : User = request.user
     homeworks = Homework.objects.filter(class_object=user.class_object).all()
-    homeworks_completions = [HomeworkCompletion.objects.get(homework=hw,student=user) for hw in homeworks]
-    homeworks = [(hw,hwc) for hw,hwc in zip(homeworks,homeworks_completions)]
-    return render(request,"scolaris_app/student/homework.html",{"homeworks" : homeworks})
+    if homeworks:
+        homeworks_completions = [HomeworkCompletion.objects.get(homework=hw,student=user) for hw in homeworks]
+        homeworks = [(hw,hwc) for hw,hwc in zip(homeworks,homeworks_completions)]
+    return render(request,"scolaris_app/student/homework/homework.html",{"homeworks" : homeworks})
 
 def homework_detail(request : HttpRequest,id : int):
     hw = get_object_or_404(Homework,id=id)
     if hw.class_object != request.user.class_object:
         return forbiden_access(request)
-    return render(request,"scolaris_app/student/homework_detail.html",{"hw" : hw})
+    return render(request,"scolaris_app/student/homework/homework_detail.html",{"hw" : hw})
 
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
@@ -59,13 +61,13 @@ def subjects(request : HttpRequest):
     user : User = request.user
     class_object = user.class_object
     subs = class_object.subjects_taken.all()
-    return render(request,"scolaris_app/student/subjects.html",{"subjects" : subs,"class" : class_object})
+    return render(request,"scolaris_app/student/subject/subjects.html",{"subjects" : subs,"class" : class_object})
 
 def subject(request : HttpRequest,id : int):
     sub = get_object_or_404(Subject,id=id)
     assmts = Assessment.objects.filter(subject=sub).all()
     marks = Mark.objects.filter(student=request.user,assessment__in=assmts)
-    return render(request,"scolaris_app/student/subject_detail.html",{"sub" : sub,"mks" : marks})
+    return render(request,"scolaris_app/student/subject/subject_detail.html",{"sub" : sub,"mks" : marks})
 
 def teacher_assessments(request : HttpRequest):
     teacher : User = request.user

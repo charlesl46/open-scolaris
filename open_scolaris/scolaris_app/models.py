@@ -14,6 +14,10 @@ class Subject(models.Model):
 
     def __str__(self) -> str:
         return self.name
+    
+    @property
+    def teachers_list(self):
+        return " / ".join([t.full_name for t in self.teachers.all()])
 
 class Class(models.Model):
     code = models.CharField(max_length=20)
@@ -31,16 +35,17 @@ class Homework(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE,null=True)
     class_object = models.ForeignKey(Class,on_delete=models.CASCADE,null=True)
     due_date = models.DateTimeField(blank=True,null=True)
-    due_course = models.ForeignKey("Course",on_delete=models.CASCADE,null=True,help_text="Le cours avant lequel le devoir doit être effectué, ne peut être qu'un cours de la classe dont c'est le devoir")
+    due_course = models.ForeignKey("Course",on_delete=models.CASCADE,blank=True,null=True,help_text="Le cours avant lequel le devoir doit être effectué, ne peut être qu'un cours de la classe dont c'est le devoir")
 
     def __str__(self) -> str:
         return self.title
     
     def clean(self):
-        if self.due_course.class_object != self.class_object:
-            raise ValidationError(f"Le cours de rendu doit être un cours de la classe {self.class_object.code}")
-        if self.due_course.subject != self.subject:
-            raise ValidationError(f"La matière du cours de rendu doit être la matière du devoir")
+        if self.due_course:
+            if self.due_course.class_object != self.class_object:
+                raise ValidationError(f"Le cours de rendu doit être un cours de la classe {self.class_object.code}")
+            if self.due_course.subject != self.subject:
+                raise ValidationError(f"La matière du cours de rendu doit être la matière du devoir")
         
 class HomeworkCompletion(models.Model):
     student = models.ForeignKey(AUTH_USER_MODEL,limit_choices_to={"role" : "S"},on_delete=models.CASCADE)
@@ -78,6 +83,12 @@ class Course(models.Model):
         formatted_date_end = self.date_end.strftime('%Y-%m-%d %H:%M') if self.date_end else 'N/A'
         
         return f"Cours de {self.subject.name} de {formatted_date_begin} à {formatted_date_end}"
+    
+    def verbose_date(self):
+        formatted_date = self.date_begin.strftime('%Y-%m-%d')
+        formatted_time_begin = self.date_begin.strftime("%H:%M")
+        formatted_time_end = self.date_end.strftime("%H:%M")
+        return f"{formatted_date} de {formatted_time_begin} à {formatted_time_end}"
 
     def clean(self):
         if self.teacher:
@@ -138,3 +149,9 @@ class Mark(models.Model):
     @property
     def mean(self) -> str:
         return self.assessment.mean
+    
+class CanteenMenu(models.Model):
+    starter = models.CharField(max_length=50)
+    main = models.CharField(max_length=50)
+    dessert = models.CharField(max_length=50)
+    date = models.DateField(unique=True)
