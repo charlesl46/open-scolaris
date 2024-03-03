@@ -21,7 +21,7 @@
     <div style="margin-top: 50px; margin-left: 3%; margin-right: 3%;">
         <div class="ui grid">
             <div class="twelve wide column">
-                <div class="ui raised segment">
+                <div class="ui teal raised segment">
                     {% block content %}
                     {% endblock %}
                 </div>
@@ -46,7 +46,17 @@
             var timeString = heures + ":" + minutes;
             $("#time_nav").text(timeString + " - " + dateStringCapitalized);
         }, 100);
-
     </script>
+    <style>
+        @font-face {
+            font-family: "Onest";
+            src: url("{% static 'onest/OnestRegular1602-hint.woff' %}");
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: Onest,sans-serif !important;
+        }
+
+    </style>
 </body>
 </html>

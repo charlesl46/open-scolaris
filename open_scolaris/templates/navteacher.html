@@ -1,4 +1,9 @@
 <div class="ui secondary menu" style="margin: 10px; margin-top: 5px;">
+  
+  {% load static %}
+  <div class="item">
+    <img class="ui tiny image" style="width: 60px;" src="{% static 'logos/logo-without-background-cropped.png' %}">
+  </div>
   <a href="{% url 'home' %}" class="item"><i class="home icon"></i>Accueil</a>
   <a href="{% url 'calendar' %}" class="item"><i class="calendar alternate outline icon"></i>Emploi du temps</a>
   <a href="{% url 'subjects' %}" class="item"><i class="book icon"></i>Cours</a>
@@ -17,7 +22,7 @@
     <a href="{% url 'notifications' %}" class="item {% if active == 'notifications' %}active{% endif %}">
         {% if unread_count %}
         <i class="bell icon"></i> Notifications
-        <div id="unread_count" class="bottom circular floating ui red label">{{unread_count}}</div>
+        <div id="unread_count" class="bottom looping pulsating transition circular floating ui red label">{{unread_count}}</div>
         {% else %}
         <i class="bell outline icon"></i> Notifications
         {% endif %}

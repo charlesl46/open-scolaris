@@ -9,7 +9,7 @@ register = template.Library()
 def get_now():
     locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
     now = datetime.now()
-    date_formatee = now.strftime("%H:%M - %A %d %B %Y")
+    date_formatee = now.strftime("%H:%M - %A %e %B %Y")
     locale.setlocale(locale.LC_TIME, '')
     return date_formatee
 

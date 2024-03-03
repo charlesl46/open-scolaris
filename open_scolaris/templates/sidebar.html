@@ -1,4 +1,4 @@
-<div class="ui raised segment">
+<div class="ui green raised segment">
     <h2 class="ui header">Tableau de bord</h2>
     <h4 class="ui header">Vos cours à venir</h4>
     <div class="ui relaxed divided list">
@@ -55,7 +55,7 @@
 
 {% with user.unread_messages as urm %}
 
-<div class="ui raised segment">
+<div class="ui blue raised segment">
     <h2 class="ui header">Messagerie</h2>
     {% if urm %}
         <div class="ui list">
@@ -86,7 +86,7 @@
 {% load custom_tags %}
 {% menu_today as menu %}
 
-<div class="ui raised segment">
+<div class="ui red raised segment">
     <h2 class="ui header">Aujourd'hui à la cantine</h2>
     {% if menu %}
         <div class="ui list">
