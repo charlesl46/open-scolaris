@@ -1,0 +1,58 @@
+<div class="ui secondary menu" style="margin: 10px; margin-top: 5px;">
+  
+    {% load static %}
+    <div class="item">
+      <img class="ui tiny image" style="width: 60px;" src="{% static 'logos/logo-without-background-cropped.png' %}">
+    </div>
+    <a href="{% url 'home' %}" class="item"><i class="home icon"></i>Accueil</a>
+    <a href="{% url 'calendar' %}" class="item"><i class="calendar alternate outline icon"></i>Emploi du temps</a>
+    <div class="ui dropdown item">
+      Autres
+      <i class="dropdown icon"></i>
+      <div class="menu">
+        <a href="{% url 'subjects' %}" class="item"><i class="book icon"></i>Cours</a>
+        <a href="{% url 'marks' %}" class="item"><i class="percentage icon"></i>Notes</a>
+        <a href="{% url 'homework' %}" class="item"><i class="clipboard outline icon"></i>Devoirs</a>
+      </div>
+    </div>
+    
+    <div class="right menu">
+      {% load notifications_tags %}
+  
+      {% notifications_unread as unread_count %}
+      <a href="{% url 'notifications' %}" class="item {% if active == 'notifications' %}active{% endif %}">
+          {% if unread_count %}
+          <i class="bell icon"></i> Notifications
+          <div id="unread_count" class="bottom looping pulsating transition circular floating ui red label">{{unread_count}}</div>
+          {% else %}
+          <i class="bell outline icon"></i> Notifications
+          {% endif %}
+      </a>
+  
+      {% load custom_tags %}
+  
+      <div class="ui item">
+        <i class="clock outline icon"></i> <span id="time_nav">{% get_now %}</span>
+      </div>
+  
+      <div class="ui right dropdown item">
+        <i class="user icon"></i>
+        {{user.full_name}}
+        <div class="menu">
+          <div class="header">
+            <i class="{{user.main_ui_color}} school icon"></i>
+            Administratif
+          </div>
+          <div class="divider"></div>
+          {% if user.is_staff %}
+          <a href="{% url 'admin:index' %}" class="item"><i class="user cog icon"></i>Administration</a>
+          {% endif %}
+          <a class="item"><i class="cog icon"></i>Paramètres</a>
+          <a href="{% url 'logout' %}" class="item"><i class="sign out alternate icon"></i>Déconnexion</a>
+        </div>
+      </div>
+      <script>
+        $(".dropdown.item").dropdown({on : "hover"});
+      </script>
+    </div>
+  </div>

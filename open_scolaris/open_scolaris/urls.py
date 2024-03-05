@@ -44,3 +44,11 @@ urlpatterns = [
     path('messages/new',write_message,name="write-message"),
     path('messages/search-recipients',search_recipients,name="search-recipients"),
 ]
+
+from django.conf.urls import handler404,handler500
+from scolaris_app.code_views import handler404_view,handler500_view
+
+handler404 = handler404_view
+handler500 = handler500_view
+
+

@@ -27,6 +27,17 @@ class User(AbstractUser):
     def is_teacher(self):
         return self.role == "T"
     
+    def is_admin(self):
+        return self.role == "A"
+    
+    def main_ui_color(self):
+        if self.is_student():
+            return "teal"
+        elif self.is_teacher():
+            return "red"
+        else:
+            return "yellow"
+
     def clean(self):
         if self.role == "S" and not self.class_object:
             raise ValidationError("Un élève doit impérativement appartenir à une classe")

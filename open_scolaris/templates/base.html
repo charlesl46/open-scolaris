@@ -14,14 +14,19 @@
 <body>
     {% if user.is_student %}
         {% include 'navstudent.html' %}
-    {% else %}
+    {% endif %}
+    {% if user.is_teacher %}
         {% include 'navteacher.html' %}
     {% endif %}
+    {% if user.is_admin %}
+        {% include 'navadmin.html' %}
+    {% endif %}
+
     {% include 'messages.html' %}
     <div style="margin-top: 50px; margin-left: 3%; margin-right: 3%;">
         <div class="ui grid">
             <div class="twelve wide column">
-                <div class="ui teal raised segment">
+                <div class="ui {{user.main_ui_color}} raised segment" id="main_content_segment">
                     {% block content %}
                     {% endblock %}
                 </div>
@@ -47,16 +52,7 @@
             $("#time_nav").text(timeString + " - " + dateStringCapitalized);
         }, 100);
     </script>
-    <style>
-        @font-face {
-            font-family: "Onest";
-            src: url("{% static 'onest/OnestRegular1602-hint.woff' %}");
-        }
-
-        h1, h2, h3, h4, h5 {
-            font-family: Onest,sans-serif !important;
-        }
-
-    </style>
+    {% include 'global_css.html' %}
+    <script src="{% static 'global.js' %}"></script>
 </body>
 </html>
