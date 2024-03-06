@@ -10,9 +10,6 @@
       Autres
       <i class="dropdown icon"></i>
       <div class="menu">
-        <a href="{% url 'subjects' %}" class="item"><i class="book icon"></i>Cours</a>
-        <a href="{% url 'marks' %}" class="item"><i class="percentage icon"></i>Notes</a>
-        <a href="{% url 'homework' %}" class="item"><i class="clipboard outline icon"></i>Devoirs</a>
       </div>
     </div>
     
@@ -35,7 +32,7 @@
         <i class="clock outline icon"></i> <span id="time_nav">{% get_now %}</span>
       </div>
   
-      <div class="ui right dropdown item">
+      <div class="ui dropdown item">
         <i class="user icon"></i>
         {{user.full_name}}
         <div class="menu">
