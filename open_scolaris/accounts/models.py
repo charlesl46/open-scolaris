@@ -30,14 +30,56 @@ class User(AbstractUser):
     def is_admin(self):
         return self.role == "A"
     
+    @classmethod
+    def student_icon_class(self):
+        return "user graduate"
+    
+    @classmethod
+    def admin_icon_class(self):
+        return "school"
+    
+    @classmethod
+    def teacher_icon_class(self):
+        return "chalkboard teacher"
+    
+    @classmethod
+    def student_main_ui_color(self):
+        return "teal"
+    
+    @classmethod
+    def admin_main_ui_color(self):
+        return "yellow"
+    
+    @classmethod
+    def teacher_main_ui_color(self):
+        return "red"
+    
     def main_ui_color(self):
         if self.is_student():
-            return "teal"
+            return self.student_main_ui_color()
         elif self.is_teacher():
-            return "red"
+            return self.teacher_main_ui_color()
         else:
-            return "yellow"
-
+            # administratif
+            return self.admin_main_ui_color()
+        
+    def role_icon_class(self):
+        if self.is_student():
+            return self.student_icon_class()
+        elif self.is_teacher():
+            return self.teacher_icon_class()
+        else:
+            # administratif
+            return self.admin_icon_class()
+        
+    def recent_interlocutors(self,n_interlocutors : int = 10):
+        recipients_qs = self.os_messages_sent.values("recipients").all()
+        recipients_ids = []
+        for recipient in recipients_qs:
+            recipients_ids.append(recipient.get("recipients"))
+        recipients = User.objects.filter(id__in=recipients_ids).all()
+        return recipients
+    
     def clean(self):
         if self.role == "S" and not self.class_object:
             raise ValidationError("Un élève doit impérativement appartenir à une classe")

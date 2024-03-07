@@ -1,7 +1,8 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login,logout
-from django.http import HttpRequest
+from django.http import HttpRequest,JsonResponse
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 from notifications.signals import notify
 import datetime
 
@@ -22,3 +23,10 @@ def login_view(request : HttpRequest):
 def logout_view(request:HttpRequest):
     logout(request)
     return redirect("login")
+
+@csrf_exempt
+def browse_users(request : HttpRequest):
+    if request.method == "GET":
+        query = request.GET["query"]
+        print(query)
+        return JsonResponse({"status" : "ok","items" : ["test","test2"]})

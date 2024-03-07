@@ -14,13 +14,12 @@ def write_message(request : HttpRequest):
         message = OpenScolarisMessage.objects.create(sender=request.user)
         message.subject = data.get("subject")
         message.content = data.get("content")
-        recipients = data.getlist('recipients')
+        recipients = data.getlist('recipients')[0].split(",") # pour gérer le comportement bizarre
         recipients_objs = []
         for r in recipients:
             recipient = User.objects.get(username=r)
             recipients_objs.append(recipient)
         message.recipients.set(recipients_objs)
-
         attachments = []
         for f in request.FILES.getlist('attachments'):
             attachment = OSMessageAttachment.objects.create(file=f)

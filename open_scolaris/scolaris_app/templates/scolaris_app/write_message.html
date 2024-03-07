@@ -6,17 +6,65 @@
     <h4 class="ui dividing header">Destinataires</h4>
     {% csrf_token %}
 
-    <div class="ui field">
+    <div id="recipients" class="ui field">
+        <div class="ui fluid multiple search normal selection dropdown" mutliple="">
+            <input type="hidden" name="recipients">
+            <i class="dropdown icon"></i>
+            <div class="default text">Sélectionner des destinataires</div>
+            <div class="menu">
+                {% for u in user.recent_interlocutors %}
+                <div class="item" data-value="{{u.username}}"><i class="{{u.main_ui_color}} {{u.role_icon_class}} icon"></i>{{u.full_name}} (<code>{{u.username}}</code>)</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="ui special popup">
+        <!-- <div class="header">Rechercher des destinataires</div> -->
+        <div class="ui list">
+            <div class="item">
+              <i class="{{user.admin_main_ui_color}} {{user.admin_icon_class}} icon"></i>
+              <div class="content">
+                administratifs
+              </div>
+            </div>
+            <div class="item">
+              <i class="{{user.teacher_main_ui_color}} {{user.teacher_icon_class}} icon"></i>
+              <div class="content">
+                enseignants
+              </div>
+            </div>
+            <div class="item">
+              <i class="{{user.student_main_ui_color}} {{user.student_icon_class}} icon"></i>
+              <div class="content">
+                étudiants
+              </div>
+            </div>
+        </div>
+    </div>
+
+
+<!--     <div class="ui field">
         <select name="recipients" class="ui fluid search dropdown" multiple="">
             <option value="">Sélectionner des destinataires</option>
             {% for u in users%}
                 <option value="{{u.username}}">{{u.full_name}} ({{u.username}})</option>
             {% endfor %}
         </select>
-    </div>
+    </div> -->
 
     <script>
+/*         $('.ui.fluid.search.dropdown').dropdown({
+            apiSettings: {
+                url : "{% url 'browse-users' %}?query={query}",
+                //url: 'https://api.github.com/search/repositories?q={query}'
+                fields: {
+                    remoteValues : 'items'
+                },
+            }
+        }); */
         $('.ui.fluid.search.dropdown').dropdown();
+        $("#field").popup({inline : true});
     </script>
 
     <h4 class="ui dividing header">Contenu du message</h4>
