@@ -30,7 +30,7 @@
     {% load custom_tags %}
 
     <div class="ui item">
-      <i class="clock outline icon"></i> <span id="time_nav">{% get_now %}</span>
+      <i class="clock outline icon"></i> <span id="time_nav"></span>
     </div>
 
     <div class="ui right dropdown item">
@@ -45,7 +45,7 @@
         {% if user.is_staff %}
         <a href="{% url 'admin:index' %}" class="item"><i class="user cog icon"></i>Administration</a>
         {% endif %}
-        <a class="item"><i class="cog icon"></i>Paramètres</a>
+        <a href="{% url 'settings' %}" class="item"><i class="cog icon"></i>Paramètres</a>
         <a href="{% url 'logout' %}" class="item"><i class="sign out alternate icon"></i>Déconnexion</a>
       </div>
     </div>

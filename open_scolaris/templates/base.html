@@ -39,7 +39,7 @@
         </div>
     </div>
     <script>
-        setInterval(() => {
+        function displayCurrentDateTime(){
             var date = new Date();
             var heures = ("0" + date.getHours()).slice(-2);
             var minutes = ("0" + date.getMinutes()).slice(-2);
@@ -52,6 +52,11 @@
 
             var timeString = heures + ":" + minutes;
             $("#time_nav").text(timeString + " - " + dateStringCapitalized);
+        }
+
+        displayCurrentDateTime();
+        setInterval(() => {
+            displayCurrentDateTime();
         }, 1000);
     </script>
     {% include 'global_css.html' %}

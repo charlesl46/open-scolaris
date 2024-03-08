@@ -1,21 +1,13 @@
-from datetime import datetime
-import locale
+from django.utils import timezone
 from scolaris_app.models import CanteenMenu
 from django import template
+import locale
 
 register = template.Library()
 
 @register.simple_tag
-def get_now():
-    locale.setlocale(locale.LC_TIME, 'fr_FR.UTF-8')
-    now = datetime.now()
-    date_formatee = now.strftime("%H:%M - %A %e %B %Y")
-    locale.setlocale(locale.LC_TIME, '')
-    return date_formatee
-
-@register.simple_tag
 def menu_today():
-    today = datetime.now()
+    today = timezone.now()
     try:
         canteen_menu = CanteenMenu.objects.get(date=today)
     except CanteenMenu.DoesNotExist:

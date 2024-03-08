@@ -15,7 +15,8 @@
 </div>
 <script>
     $('.read_message_icon').popup({
-        content : 'Marquer comme non lu'
+        content : 'Marquer comme non lu',
+        position : 'bottom left'
     });
 
     $('.message_icon').click(function(){
@@ -40,7 +41,8 @@
 
     $('.unread_message_icon')
         .popup({
-            content : 'Marquer comme lu'
+            content : 'Marquer comme lu',
+            position : 'bottom left'
         });
 </script>
 {% endblock %}

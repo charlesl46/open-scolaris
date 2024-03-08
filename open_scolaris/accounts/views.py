@@ -20,6 +20,9 @@ def login_view(request : HttpRequest):
             return redirect("home")
     return render(request,"accounts/login.html")
 
+def settings(request : HttpRequest):
+    return render(request,"accounts/settings.html")
+
 def logout_view(request:HttpRequest):
     logout(request)
     return redirect("login")
