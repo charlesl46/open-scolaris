@@ -7,6 +7,9 @@ from django.shortcuts import get_object_or_404
 from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 import uuid
+from django.core.files.storage import default_storage
+import json,os
+from django.contrib import admin
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -84,7 +87,6 @@ def create_homework_completion(sender, instance : Homework, created, **kwargs):
         for student in students_in_class:
             hw = HomeworkCompletion.objects.create(student=student, homework=instance)
             hw.save()
-
 
 class Course(models.Model):
     date_begin = models.DateTimeField(null=True)
@@ -185,7 +187,7 @@ class OSMessageAttachment(models.Model):
 
 class OpenScolarisMessage(models.Model):
     subject = models.CharField(max_length=50)
-    content = models.TextField(max_length=1000)
+    content = models.TextField(max_length=2000)
     sent_at = models.DateTimeField(auto_now_add=True)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     sender = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="os_messages_sent")
@@ -194,3 +196,51 @@ class OpenScolarisMessage(models.Model):
 
     def __str__(self):
         return f"{self.subject} (envoyé par {self.sender})"
+    
+    def was_read_by(self,user):
+        osmr = OSMessageRecipient.objects.get(message=self,recipient=user)
+        return osmr.read()
+    
+    @property
+    def html_formatted_content(self):
+        return self.content.replace("\n","<br>")
+    
+    def attachments_json(self):
+        attachments = []
+        for attachment in self.attachments.all():
+            attachment_url = default_storage.url(attachment.file.name)
+            attachment_obj = {
+                'name': os.path.basename(attachment.file.name),
+                'url': attachment_url,
+                'size': attachment.file.size,
+                'id' : attachment.id
+            }
+            print(attachment_obj)
+            attachments.append(attachment_obj)
+        return json.dumps(attachments)
+    
+class OSMessageRecipient(models.Model):
+    message = models.ForeignKey(OpenScolarisMessage, on_delete=models.CASCADE)
+    recipient = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
+    read_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("message", "recipient")
+
+    @admin.display(boolean=True)
+    def read(self):
+        return self.read_at is not None
+
+    def __str__(self):
+        return f"Réception de {self.recipient} du message n°{self.message.uuid}"
+
+@receiver(post_save, sender=OpenScolarisMessage)
+def create_recipients_objects(sender, instance : OpenScolarisMessage, created, **kwargs):
+    for recipient in instance.recipients.all():
+        print(recipient)
+        osmr,created_osmr = OSMessageRecipient.objects.get_or_create(
+            message=instance,
+            recipient=recipient,
+        )
+        if created_osmr:
+            osmr.save()

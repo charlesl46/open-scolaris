@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion,CanteenMenu,OpenScolarisMessage,OSMessageAttachment
+from .models import Class,Course,Mark,Subject,Assessment,Homework,HomeworkCompletion,CanteenMenu,OpenScolarisMessage,OSMessageAttachment,OSMessageRecipient
 
 class MarkAdmin(admin.ModelAdmin):
     list_display = ("__str__","student","subject",)
@@ -13,6 +13,9 @@ class AssessmentAdmin(admin.ModelAdmin):
 class HomeworkAdmin(admin.ModelAdmin):
     list_display = ("__str__","class_object")
 
+class OSMRAdmin(admin.ModelAdmin):
+    list_display = ("__str__","read")
+
 
 admin.site.register(Class,ClassAdmin)
 admin.site.register(Course)
@@ -24,3 +27,4 @@ admin.site.register(Assessment,AssessmentAdmin)
 admin.site.register(CanteenMenu)
 admin.site.register(OpenScolarisMessage)
 admin.site.register(OSMessageAttachment)
+admin.site.register(OSMessageRecipient,OSMRAdmin)

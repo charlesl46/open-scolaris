@@ -1,10 +1,13 @@
-from .models import OpenScolarisMessage,OSMessageAttachment
-from django.shortcuts import render
-from django.http import HttpRequest,JsonResponse
+from .models import OpenScolarisMessage,OSMessageAttachment,OSMessageRecipient
+from django.shortcuts import render,get_object_or_404
+from django.http import HttpRequest,JsonResponse,FileResponse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from accounts.models import User
+from django.contrib.messages import success
+from datetime import datetime
+from django.utils import timezone
 
 @login_required
 def write_message(request : HttpRequest):
@@ -27,6 +30,7 @@ def write_message(request : HttpRequest):
             attachments.append(attachment)
         message.attachments.set(attachments)
         message.save()
+        success(request,"Votre message a été envoyé avec succès")
         return redirect('home')
     else:
         users = User.objects.exclude(username=request.user.username).all()
@@ -40,3 +44,25 @@ def search_recipients(request : HttpRequest):
         qs = User.objects.filter(first_name__icontains=query) | User.objects.filter(last_name__icontains=query) | User.objects.filter(username__icontains=query)[:5]
         results = [{"id": user.id,"user_found": f"{user.first_name} {user.last_name} ({user.username})","username" : user.username} for user in qs]
         return JsonResponse({"results": results})
+    
+@login_required
+def message_detail(request : HttpRequest,uuid):
+    # on considère qu'une fois le message affiché une fois il est lu
+    message = get_object_or_404(OpenScolarisMessage,uuid=uuid)
+    osmr = OSMessageRecipient.objects.get(message=message,recipient=request.user)
+    if not osmr.read_at:
+        osmr.read_at = timezone.now()
+        osmr.save()
+    return render(request,"scolaris_app/message.html",{"message" : message})
+
+@login_required
+def messages(request : HttpRequest):
+    messages_objs = OpenScolarisMessage.objects.filter(recipients=request.user).order_by("-sent_at").all()
+    return render(request,"scolaris_app/message_list.html",{"message_list" : messages_objs})
+
+@login_required
+def download_attachment(request : HttpRequest,uuid,id : int):
+    attachment = get_object_or_404(OSMessageAttachment, pk=id)
+    return FileResponse(attachment.file)
+
+

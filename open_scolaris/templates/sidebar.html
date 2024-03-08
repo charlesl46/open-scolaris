@@ -1,117 +1,124 @@
-<div class="ui green raised segment">
-    <h2 class="ui header">Tableau de bord</h2>
-    <h4 class="ui header">Vos cours à venir</h4>
-    <div class="ui relaxed divided list">
-        {% if user.get_n_upcoming_classes %}
-            {% for uc in user.get_n_upcoming_classes %}
-            <div class="item">
-            <i class="large book middle aligned icon"></i>
-            <div class="content">
-                <a class="header">{{uc.subject}}</a>
-                <div class="description">{{uc.verbose_date}}</div>
-            </div>
-            </div>
-            {% endfor %}
-        {% else %}
-            <div class="ui tiny icon message">
-                <i class="chalkboard teacher icon" ></i>
-                <div class="content">
-                <p>Pas de cours à venir</p>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-    <h4 class="ui header">Vos devoirs à faire ({{user.due_homework_count}})</h4>
-    <div class="ui relaxed divided list">
-        {% if user.get_n_next_due_homework %}
-            {% for hw,hwc in user.get_n_next_due_homework %}
+<div id="sidebar">
+    <div class="ui green raised segment">
+        <h2 class="ui header">Tableau de bord</h2>
+        <h4 class="ui header">Vos cours à venir</h4>
+        <div class="ui relaxed divided list">
+            {% if user.get_n_upcoming_classes %}
+                {% for uc in user.get_n_upcoming_classes %}
                 <div class="item">
-                    {% if hwc.done %}
-                    <i class="large green tasks middle aligned icon"></i>
-                    <div class="content">
-                        <a class="header"><s class="ui strikethrough">{{hw.subject}}</s></a>
-                        <div class="description"><s class="ui strikethrough">{{hw.description}}</s></div>
-                    </div>
-                    {% else %}
-                    <i class="large red tasks middle aligned icon"></i>
-                    <div class="content">
-                        <a class="header">{{hw.subject}}</a>
-                        <div class="description">{{hw.description}}</div>
-                    </div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        {% else %}
-            <div class="ui tiny icon message">
-                <i class="clipboard list icon"></i>
+                <i class="large book middle aligned icon"></i>
                 <div class="content">
-                <p>Pas de devoirs à faire</p>
+                    <a class="header">{{uc.subject}}</a>
+                    <div class="description">{{uc.verbose_date}}</div>
                 </div>
-            </div>
-        {% endif %}
-    </div>
-
-</div>
-
-{% with user.unread_messages as urm %}
-
-<div class="ui blue raised segment">
-    <h2 class="ui header">Messagerie</h2>
-    {% if urm %}
-        <div class="ui list">
-            {% for u in urm %}
-                <div class="item">
-                    <i class="large middle aligned comment icon"></i>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="ui tiny icon message">
+                    <i class="chalkboard teacher icon" ></i>
                     <div class="content">
-                        <a class="header"><em>{{u.subject}}</em></a>
-                        <div class="description">{{u.sent_at}}</div>
+                    <p>Pas de cours à venir</p>
                     </div>
                 </div>
-            {% endfor %}
+            {% endif %}
         </div>
-    {% else %}
-        <div class="ui placeholder segment">
-            <div class="ui icon header">
+        <h4 class="ui header">Vos devoirs à faire ({{user.due_homework_count}})</h4>
+        <div class="ui relaxed divided list">
+            {% if user.get_n_next_due_homework %}
+                {% for hw,hwc in user.get_n_next_due_homework %}
+                    <div class="item">
+                        {% if hwc.done %}
+                        <i class="large green tasks middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header"><s class="ui strikethrough">{{hw.subject}}</s></a>
+                            <div class="description"><s class="ui strikethrough">{{hw.description}}</s></div>
+                        </div>
+                        {% else %}
+                        <i class="large red tasks middle aligned icon"></i>
+                        <div class="content">
+                            <a class="header">{{hw.subject}}</a>
+                            <div class="description">{{hw.description}}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="ui tiny icon message">
+                    <i class="clipboard list icon"></i>
+                    <div class="content">
+                    <p>Pas de devoirs à faire</p>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    {% with user.unread_messages as urm %}
+
+    <div class="ui blue raised segment">
+        <h2 class="ui header">Messagerie </h2>
+        {% if urm %}
+            <div class="ui list">
+                {% for u in urm %}
+                    <div class="item">
+                        <i class="large middle aligned comment icon"></i>
+                        <div class="content">
+                            <a href="{% url 'message' u.uuid %}" class="header"><em>{{u.subject}}</em></a>
+                            <div class="description">{{u.sent_at}}</div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="ui divider"></div>
+            <a href="{% url 'write-message' %}" class="ui primary labeled icon button">
                 <i class="comment outline icon"></i>
-                Aucun message
+                Nouveau message
+            </a>
+        {% else %}
+            <div class="ui placeholder segment">
+                <div class="ui icon header">
+                    <i class="blue comment outline icon"></i>
+                    Aucun message
+                </div>
+                <a href="{% url 'write-message' %}" class="ui primary button">Nouveau message</a>
             </div>
-            <a href="{% url 'write-message' %}" class="ui primary button">Nouveau message</a>
-        </div>
-    {% endif %}
-</div>
+        {% endif %}
+    </div>
 
-{% endwith %}
+    {% endwith %}
 
 
-{% load custom_tags %}
-{% menu_today as menu %}
+    {% load custom_tags %}
+    {% menu_today as menu %}
 
-<div class="ui red raised segment">
-    <h2 class="ui header">Aujourd'hui à la cantine</h2>
-    {% if menu %}
-        <div class="ui list">
-            <div class="item">
-            <i class="utensils spoon icon"></i>
-            <div class="content">
-                {{menu.starter}}
-            </div>
-            </div>
-            <div class="item">
-            <i class="utensils knife icon"></i>
-            <div class="content">
-                {{menu.main}}
+    <div class="ui red raised segment">
+        <h2 class="ui header">Aujourd'hui à la cantine</h2>
+        {% if menu %}
+            <div class="ui list">
+                <div class="item">
+                <i class="utensils spoon icon"></i>
+                <div class="content">
+                    {{menu.starter}}
+                </div>
+                </div>
+                <div class="item">
+                <i class="utensils knife icon"></i>
+                <div class="content">
+                    {{menu.main}}
 
-            </div>
-            </div>
-            <div class="item">
-            <i class="ice cream icon"></i>
-            <div class="content">
-                {{menu.dessert}}
+                </div>
+                </div>
+                <div class="item">
+                <i class="ice cream icon"></i>
+                <div class="content">
+                    {{menu.dessert}}
 
+                </div>
+                </div>
             </div>
-            </div>
-        </div>
-    {% else %}
-        <p>Pas de menu disponible pour aujourd'hui</p>
-    {% endif %}
+        {% else %}
+            <p>Pas de menu disponible pour aujourd'hui</p>
+        {% endif %}
+    </div>
 </div>

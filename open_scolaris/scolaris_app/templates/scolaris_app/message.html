@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 id="home_header" class="ui header">
+        Message de {{message.sender}}
+        <div class="sub header">Envoyé le {{ message.sent_at|date:"j F Y" }} à {{ message.sent_at|time:"H:i" }}</div>
+    </h2>
+    <!-- <a class="ui right ribbon label">Overview</a> -->
+    <div class="ui long scrolling segment">
+        <h3 class="ui header">Contenu du message</h3>
+        <p>
+            {{ message.html_formatted_content|safe }}
+        </p>
+    </div>
+    {% if message.attachments.count > 0 %}
+    <div class="ui divider"></div>
+    <div id="files_list_segment" class="ui stacked secondary segment">
+        <h3 class="ui header">Pièces - jointes ({{message.attachments.count}})</h3>
+        <div id="files_list" class="ui relaxed divided list">
+        </div>
+    </div>
+    <script>
+        $("#files_list_segment").show();
+        const files = JSON.parse('{{ message.attachments_json|escapejs }}');
+
+        for (var i = 0; i < files.length; i++) {
+            var name = files[i].name;
+            var extension = name.split('.').pop().toLowerCase();
+            var url = files[i].url;
+            var iconClass = getIconClass(extension);
+            var id = files[i].id;
+
+            var fileSize;
+
+            if (files[i].size < 1024 * 1024) {
+                fileSize = (files[i].size / 1024).toFixed(2) + " Ko"; // Convertir en Ko si la taille est inférieure à 1 Mo
+            } else {
+                fileSize = (files[i].size / (1024 * 1024)).toFixed(2) + " Mo"; // Convertir en Mo sinon
+            }
+
+            $("#files_list").append(
+                $('<div/>', {
+                    class: 'item',
+                    html: `<i class="large ${iconClass} middle aligned icon"></i>
+                    <div class="content">
+                        <a href="/messages/{{message.uuid}}/download-attachment/${id}" class="header" download="${name}">${name}</a>
+                        <div class="description">${fileSize}</div> <!-- Afficher la taille du fichier -->
+                    </div>`
+                })
+            );
+        }
+
+
+        function getIconClass(extension) {
+            var iconMap = {
+                '3ds': 'file',
+                'ai': 'file',
+                'apk': 'file',
+                'app': 'file',
+                'avi': 'file video',
+                'bmp': 'file image',
+                'c': 'file code',
+                'cpp': 'file code',
+                'css': 'file code',
+                'csv': 'database',
+                'dat': 'file',
+                'dmg': 'file archive',
+                'doc': 'file word',
+                'docx': 'file word',
+                'exe': 'file',
+                'flv': 'file video',
+                'gif': 'file image',
+                'h': 'file code',
+                'html': 'file code',
+                'ics': 'file alternate',
+                'iso': 'file archive',
+                'java': 'file code',
+                'jpeg': 'file image',
+                'jpg': 'file image',
+                'js': 'file code',
+                'json': 'file code',
+                'log': 'file alternate',
+                'm4a': 'file audio',
+                'm4v': 'file video',
+                'mov': 'file video',
+                'mp3': 'file audio',
+                'mp4': 'file video',
+                'mpeg': 'file video',
+                'mpg': 'file video',
+                'odp': 'file powerpoint',
+                'ods': 'file excel',
+                'odt': 'file word',
+                'ogg': 'file audio',
+                'pdf': 'file pdf',
+                'php': 'file code',
+                'png': 'file image',
+                'ppt': 'file powerpoint',
+                'pptx': 'file powerpoint',
+                'psd': 'file image',
+                'py': 'file code',
+                'rar': 'file archive',
+                'rb': 'file code',
+                'rtf': 'file alternate',
+                'scss': 'file code',
+                'sql': 'file code',
+                'svg': 'file image',
+                'tar': 'file archive',
+                'tgz': 'file archive',
+                'tif': 'file image',
+                'tiff': 'file image',
+                'txt': 'file alternate',
+                'wav': 'file audio',
+                'webm': 'file video',
+                'wma': 'file audio',
+                'wmv': 'file video',
+                'xls': 'file excel',
+                'xlsx': 'file excel',
+                'xml': 'file code',
+                'zip': 'file archive'
+            };
+            return iconMap[extension] || 'file';
+        }
+    </script>
+    {% endif %}
+{% endblock %}

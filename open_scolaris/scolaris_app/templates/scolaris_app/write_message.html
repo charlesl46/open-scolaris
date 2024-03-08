@@ -12,7 +12,7 @@
             <i class="dropdown icon"></i>
             <div class="default text">Sélectionner des destinataires</div>
             <div class="menu">
-                {% for u in user.recent_interlocutors %}
+                {% for u in users %}
                 <div class="item" data-value="{{u.username}}"><i class="{{u.main_ui_color}} {{u.role_icon_class}} icon"></i>{{u.full_name}} (<code>{{u.username}}</code>)</div>
                 {% endfor %}
             </div>
@@ -56,7 +56,7 @@
     <script>
 /*         $('.ui.fluid.search.dropdown').dropdown({
             apiSettings: {
-                url : "{% url 'browse-users' %}?query={query}",
+                
                 //url: 'https://api.github.com/search/repositories?q={query}'
                 fields: {
                     remoteValues : 'items'
@@ -197,8 +197,6 @@
             'xml': 'file code',
             'zip': 'file archive'
         };
-
-
         return iconMap[extension] || 'file';
     }
 

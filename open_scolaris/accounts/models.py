@@ -101,7 +101,7 @@ class User(AbstractUser):
     
     @property
     def unread_messages(self):
-        messages = OpenScolarisMessage.objects.filter(recipients=self).all()
+        messages = [message for message in OpenScolarisMessage.objects.filter(recipients=self).order_by("-sent_at").all() if not message.was_read_by(self)]
         return messages
 
 
