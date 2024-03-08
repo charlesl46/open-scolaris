@@ -26,6 +26,8 @@
     <div style="margin-top: 50px; margin-left: 3%; margin-right: 3%;">
         <div class="ui grid">
             <div class="twelve wide column">
+                {% block breadcrumb %}
+                {% endblock %}
                 <div class="ui {{user.main_ui_color}} raised segment" id="main_content_segment">
                     {% block content %}
                     {% endblock %}

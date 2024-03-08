@@ -10,6 +10,7 @@ import uuid
 from django.core.files.storage import default_storage
 import json,os
 from django.contrib import admin
+from django.utils import timezone
 
 class Subject(models.Model):
     name = models.CharField(max_length=100)
@@ -201,6 +202,10 @@ class OpenScolarisMessage(models.Model):
         osmr = OSMessageRecipient.objects.get(message=self,recipient=user)
         return osmr.read()
     
+    def toggle_read(self,recipient):
+        osmr = OSMessageRecipient.objects.get(message=self,recipient=recipient)
+        return osmr.toggle_read()
+    
     @property
     def html_formatted_content(self):
         return self.content.replace("\n","<br>")
@@ -226,6 +231,14 @@ class OSMessageRecipient(models.Model):
 
     class Meta:
         unique_together = ("message", "recipient")
+
+    def toggle_read(self):
+        if self.read_at is None:
+            self.read_at = timezone.now()
+        else:
+            self.read_at = None
+        self.save()
+        return self.read_at
 
     @admin.display(boolean=True)
     def read(self):

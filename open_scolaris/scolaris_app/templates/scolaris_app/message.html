@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block breadcrumb %}
+<div class="ui breadcrumb">
+    <a href="{% url 'messages' %}" class="section">Messages</a>
+    <i class="right angle icon divider"></i>
+    <a class="active section">{{message.subject}}</a>
+</div>
+{% endblock %}
+
 {% block content %}
     <h2 id="home_header" class="ui header">
         Message de {{message.sender}}
@@ -7,7 +15,7 @@
     </h2>
     <!-- <a class="ui right ribbon label">Overview</a> -->
     <div class="ui long scrolling segment">
-        <h3 class="ui header">Contenu du message</h3>
+        <h3 class="ui header">Objet : {{message.subject}}</h3>
         <p>
             {{ message.html_formatted_content|safe }}
         </p>

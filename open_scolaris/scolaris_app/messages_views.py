@@ -8,6 +8,7 @@ from accounts.models import User
 from django.contrib.messages import success
 from datetime import datetime
 from django.utils import timezone
+from notifications.signals import notify
 
 @login_required
 def write_message(request : HttpRequest):
@@ -21,6 +22,7 @@ def write_message(request : HttpRequest):
         recipients_objs = []
         for r in recipients:
             recipient = User.objects.get(username=r)
+            notify.send(request.user,recipient=recipient,verb=f"Nouveau message",level='info',description=f"Vous avez reçu un message de {request.user}")
             recipients_objs.append(recipient)
         message.recipients.set(recipients_objs)
         attachments = []
@@ -57,12 +59,21 @@ def message_detail(request : HttpRequest,uuid):
 
 @login_required
 def messages(request : HttpRequest):
-    messages_objs = OpenScolarisMessage.objects.filter(recipients=request.user).order_by("-sent_at").all()
+    messages_objs = [(message,message.was_read_by(request.user)) for message in OpenScolarisMessage.objects.filter(recipients=request.user).order_by("-sent_at").all()]
     return render(request,"scolaris_app/message_list.html",{"message_list" : messages_objs})
 
 @login_required
 def download_attachment(request : HttpRequest,uuid,id : int):
     attachment = get_object_or_404(OSMessageAttachment, pk=id)
     return FileResponse(attachment.file)
+
+@login_required
+@csrf_exempt
+def message_toggle_read(request : HttpRequest):
+    if request.method == "POST":
+        uuid = request.POST.get("message_uuid")
+        message = get_object_or_404(OpenScolarisMessage,uuid=uuid)
+        read = message.toggle_read(request.user)
+        return JsonResponse({"read" : read})
 
 

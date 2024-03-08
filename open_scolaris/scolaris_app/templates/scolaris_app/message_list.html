@@ -2,15 +2,45 @@
 
 {% block content %}
 <h2 id="home_header" class="ui header">Mes messages</h2>
-{% for m in message_list %}
-<div class="ui very relaxed list">
+<div class="ui very relaxed divided list">
+    {% for m,read in message_list %}
     <div class="item">
-        <i class="blue large comment outline middle aligned icon"></i>
+        <i id="{{m.uuid}}" class="blue large comment {% if read %} outline {% endif %} middle aligned link icon message_icon {% if read %} read_message_icon {% else %} unread_message_icon {% endif %} "></i>
         <div class="content">
             <a href="{% url 'message' m.uuid %}" class="header">{{m.subject}}</a>
             <div class="description">Reçu le {{ m.sent_at|date:"j F Y" }} à {{ m.sent_at|time:"H:i" }}</div>
         </div>
     </div>
-  </div>
-{% endfor %}
+    {% endfor %}
+</div>
+<script>
+    $('.read_message_icon').popup({
+        content : 'Marquer comme non lu'
+    });
+
+    $('.message_icon').click(function(){
+        var icon = $(this);
+        var uuid = icon.attr("id");
+        $.post("{% url 'message-toggle-read' %}",{message_uuid : uuid},(response)=>{
+            if (response.read){
+                icon.addClass("read_message_icon").addClass("outline").removeClass("unread_message_icon");
+                $.toast({
+                    position : "bottom left",
+                    message: 'Marqué comme lu'
+                });
+            }else{
+                icon.addClass("unread_message_icon").removeClass("outline").removeClass("read_message_icon");
+                $.toast({
+                    position : "bottom left",
+                    message: 'Marqué comme non lu'
+                });
+            }
+        });
+    });
+
+    $('.unread_message_icon')
+        .popup({
+            content : 'Marquer comme lu'
+        });
+</script>
 {% endblock %}

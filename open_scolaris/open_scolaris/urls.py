@@ -19,7 +19,7 @@ from django.urls import path,include
 from accounts.views import login_view,logout_view,browse_users
 from scolaris_app.views import home,calendar,marks,mark,homework,homework_detail,mark_as_done,subjects,subject,teacher_assessments,assessment_detail,give_mark
 import scolaris_app.notifications_views as views
-from scolaris_app.messages_views import write_message,search_recipients,message_detail,download_attachment,messages
+from scolaris_app.messages_views import write_message,search_recipients,message_detail,download_attachment,messages,message_toggle_read
 
 urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
@@ -45,6 +45,7 @@ urlpatterns = [
     path('messages/new',write_message,name="write-message"),
     path('messages/search-recipients',search_recipients,name="search-recipients"),
     path('messages/<uuid:uuid>',message_detail,name="message"),
+    path('messages/toggle-read',message_toggle_read,name="message-toggle-read"),
     path('messages/<uuid:uuid>/download-attachment/<int:id>',download_attachment,name="download-attachment"),
 ]
 
