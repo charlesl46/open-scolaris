@@ -16,119 +16,284 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Assessment',
+            name="Assessment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50, null=True)),
-                ('off', models.SmallIntegerField(default=20)),
-                ('min', models.SmallIntegerField(default=0)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=50, null=True)),
+                ("off", models.SmallIntegerField(default=20)),
+                ("min", models.SmallIntegerField(default=0)),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='CanteenMenu',
+            name="CanteenMenu",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('starter', models.CharField(max_length=50)),
-                ('main', models.CharField(max_length=50)),
-                ('dessert', models.CharField(max_length=50)),
-                ('date', models.DateField(unique=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("starter", models.CharField(max_length=50)),
+                ("main", models.CharField(max_length=50)),
+                ("dessert", models.CharField(max_length=50)),
+                ("date", models.DateField(unique=True)),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Class',
+            name="Class",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=20)),
-                ('slug', models.SlugField(blank=True, unique=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("code", models.CharField(max_length=20)),
+                ("slug", models.SlugField(blank=True, unique=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Course',
+            name="Course",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date_begin', models.DateTimeField(null=True)),
-                ('date_end', models.DateTimeField(null=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('class_object', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.class')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("date_begin", models.DateTimeField(null=True)),
+                ("date_end", models.DateTimeField(null=True)),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                (
+                    "class_object",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="scolaris_app.class",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Homework',
+            name="Homework",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=50)),
-                ('description', models.TextField(max_length=200)),
-                ('due_date', models.DateTimeField(blank=True, null=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('class_object', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.class')),
-                ('due_course', models.ForeignKey(blank=True, help_text="Le cours avant lequel le devoir doit être effectué, ne peut être qu'un cours de la classe dont c'est le devoir", null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.course')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=50)),
+                ("description", models.TextField(max_length=200)),
+                ("due_date", models.DateTimeField(blank=True, null=True)),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                (
+                    "class_object",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="scolaris_app.class",
+                    ),
+                ),
+                (
+                    "due_course",
+                    models.ForeignKey(
+                        blank=True,
+                        help_text="Le cours avant lequel le devoir doit être effectué, ne peut être qu'un cours de la classe dont c'est le devoir",
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="scolaris_app.course",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Subject',
+            name="Subject",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-                ('code', models.CharField(max_length=20)),
-                ('description', models.TextField(blank=True, max_length=200, null=True)),
-                ('slug', models.SlugField(blank=True, unique=True)),
-                ('teachers', models.ManyToManyField(limit_choices_to={'role': 'T'}, related_name='subjects', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=100)),
+                ("code", models.CharField(max_length=20)),
+                (
+                    "description",
+                    models.TextField(blank=True, max_length=200, null=True),
+                ),
+                ("slug", models.SlugField(blank=True, unique=True)),
+                (
+                    "teachers",
+                    models.ManyToManyField(
+                        limit_choices_to={"role": "T"},
+                        related_name="subjects",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Mark',
+            name="Mark",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('mark', models.FloatField(blank=True, null=True)),
-                ('uuid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
-                ('assessment', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='marks', to='scolaris_app.assessment')),
-                ('student', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("mark", models.FloatField(blank=True, null=True)),
+                (
+                    "uuid",
+                    models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
+                ),
+                (
+                    "assessment",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="marks",
+                        to="scolaris_app.assessment",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='HomeworkCompletion',
+            name="HomeworkCompletion",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('done', models.BooleanField(default=False)),
-                ('homework', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.homework')),
-                ('student', models.ForeignKey(limit_choices_to={'role': 'S'}, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("done", models.BooleanField(default=False)),
+                (
+                    "homework",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="scolaris_app.homework",
+                    ),
+                ),
+                (
+                    "student",
+                    models.ForeignKey(
+                        limit_choices_to={"role": "S"},
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='homework',
-            name='subject',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.subject'),
+            model_name="homework",
+            name="subject",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="scolaris_app.subject",
+            ),
         ),
         migrations.AddField(
-            model_name='course',
-            name='subject',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.subject'),
+            model_name="course",
+            name="subject",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="scolaris_app.subject",
+            ),
         ),
         migrations.AddField(
-            model_name='course',
-            name='teacher',
-            field=models.ForeignKey(limit_choices_to={'role': 'T'}, null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="course",
+            name="teacher",
+            field=models.ForeignKey(
+                limit_choices_to={"role": "T"},
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='class',
-            name='subjects_taken',
-            field=models.ManyToManyField(to='scolaris_app.subject'),
+            model_name="class",
+            name="subjects_taken",
+            field=models.ManyToManyField(to="scolaris_app.subject"),
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='class_object',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.class'),
+            model_name="assessment",
+            name="class_object",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="scolaris_app.class",
+            ),
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='course',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.course'),
+            model_name="assessment",
+            name="course",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="scolaris_app.course",
+            ),
         ),
         migrations.AddField(
-            model_name='assessment',
-            name='subject',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='scolaris_app.subject'),
+            model_name="assessment",
+            name="subject",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="scolaris_app.subject",
+            ),
         ),
     ]

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}    
+    <h2 class="ui header">Vos cours</h2>
+    <div class="ui raised segment">
+        <h3 class="ui header">
+            <div class="content">
+                Aujourd'hui
+                <div id="today" class="sub header"></div>
+                <script>
+                    const now = new Date();
+                    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+                    const todayFormatted = new Intl.DateTimeFormat('fr-FR', options).format(now);
+                    const todayFormattedCapitalized = todayFormatted.charAt(0).toUpperCase() + todayFormatted.slice(1);
+                    const monthIndex = todayFormatted.indexOf(' ');
+                    const dayIndex = todayFormatted.lastIndexOf(' ');
+                    const monthCapitalized = todayFormatted.slice(monthIndex + 1, dayIndex).charAt(0).toUpperCase() + todayFormatted.slice(monthIndex + 2, dayIndex);
+                    const todayFormattedFinal = todayFormattedCapitalized.slice(0, monthIndex + 1) + monthCapitalized + todayFormattedCapitalized.slice(dayIndex);
+                    $("#today").text(todayFormattedFinal);
+                </script>
+            </div>
+        </h3>
+        <div class="ui connected feed">
+            {% if todays_courses %}
+                {% for cours in todays_courses %}
+                    <div class="event">
+                        <div class="label">
+                            <i class="{{user.main_ui_color}} book icon"></i>
+                        </div>
+                        <div class="content">
+                            <div class="summary">
+                                <span class="font-onest">{{cours.subject}}</span>
+                                <div class="date">
+                                    <i class="clock icon"></i>
+                                    {{cours.verbose_date}}
+                                </div>
+                            </div>
+                            <div class="meta">
+                            <a class="like">
+                                <i class="building icon"></i> Salle B25
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="ui divider"></div>
+
+    <div class="ui raised segment">
+        <h3 class="ui header">
+            <div class="content">
+                Demain
+                <div id="tomorrow" class="sub header"></div>
+                <script>
+                    const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000); // ajoutez 24 heures à la date actuelle
+                    const tomorrowFormatted = new Intl.DateTimeFormat('fr-FR', options).format(tomorrow);
+                    const tomorrowFormattedCapitalized = tomorrowFormatted.charAt(0).toUpperCase() + tomorrowFormatted.slice(1);
+                    const monthIndexTomorrow = tomorrowFormatted.indexOf(' ');
+                    const dayIndexTomorrow = tomorrowFormatted.lastIndexOf(' ');
+                    const monthCapitalizedTomorrow = tomorrowFormatted.slice(monthIndexTomorrow + 1, dayIndexTomorrow).charAt(0).toUpperCase() + tomorrowFormatted.slice(monthIndexTomorrow + 2, dayIndexTomorrow);
+                    const tomorrowFormattedFinal = tomorrowFormattedCapitalized.slice(0, monthIndexTomorrow + 1) + monthCapitalizedTomorrow + tomorrowFormattedCapitalized.slice(dayIndexTomorrow);
+                    $("#tomorrow").text(tomorrowFormattedFinal);
+                </script>
+            </div>
+        </h3>
+        <div class="ui connected feed">
+            {% if tomorrows_courses %}
+                {% for cours in tomorrows_courses %}
+                    <div class="event">
+                        <div class="label">
+                            <i class="{{user.main_ui_color}} book icon"></i>
+                        </div>
+                        <div class="content">
+                            <div class="summary">
+                                <span class="font-onest">{{cours.subject}}</span>
+                                <div class="date">
+                                    <i class="clock icon"></i>
+                                    {{cours.verbose_date}}
+                                </div>
+                            </div>
+                            <div class="meta">
+                            <a class="like">
+                                <i class="building icon"></i> Salle B25
+                            </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+

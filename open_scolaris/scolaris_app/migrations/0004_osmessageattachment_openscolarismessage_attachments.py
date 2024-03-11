@@ -6,20 +6,30 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('scolaris_app', '0003_openscolarismessage'),
+        ("scolaris_app", "0003_openscolarismessage"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OSMessageAttachment',
+            name="OSMessageAttachment",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('file', models.FileField(upload_to='attachments/')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("file", models.FileField(upload_to="attachments/")),
             ],
         ),
         migrations.AddField(
-            model_name='openscolarismessage',
-            name='attachments',
-            field=models.ManyToManyField(blank=True, to='scolaris_app.osmessageattachment'),
+            model_name="openscolarismessage",
+            name="attachments",
+            field=models.ManyToManyField(
+                blank=True, to="scolaris_app.osmessageattachment"
+            ),
         ),
     ]

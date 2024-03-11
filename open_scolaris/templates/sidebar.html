@@ -8,7 +8,7 @@
                 <div class="item">
                 <i class="large book middle aligned icon"></i>
                 <div class="content">
-                    <a class="header">{{uc.subject}}</a>
+                    <a href="{% url 'subject' uc.subject.slug %}" class="header">{{uc.subject}}</a>
                     <div class="description">{{uc.verbose_date}}</div>
                 </div>
                 </div>

@@ -5,6 +5,7 @@ import locale
 
 register = template.Library()
 
+
 @register.simple_tag
 def menu_today():
     today = timezone.now()

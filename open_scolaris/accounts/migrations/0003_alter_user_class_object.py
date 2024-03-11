@@ -7,14 +7,20 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('scolaris_app', '0004_osmessageattachment_openscolarismessage_attachments'),
-        ('accounts', '0002_initial'),
+        ("scolaris_app", "0004_osmessageattachment_openscolarismessage_attachments"),
+        ("accounts", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='user',
-            name='class_object',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='students', to='scolaris_app.class'),
+            model_name="user",
+            name="class_object",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="students",
+                to="scolaris_app.class",
+            ),
         ),
     ]
